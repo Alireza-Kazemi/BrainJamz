@@ -56,4 +56,4 @@ for j=1:dim(3)
     maskedVol(:,:,j) = img;
 
 end
-% maskedVol = maskedVol(mask);
+maskedVol = maskedVol(mask);

@@ -1,7 +1,13 @@
 % RSA Analysis
+
 clear;
 clc;
-close all;
+if (ispc)
+    Sep = '\';
+else
+    Sep = '/';
+end
+SessionNum=1;
 
 %% Load Information data
 load ParticipantsInfoJan23.mat
@@ -15,15 +21,31 @@ MaskNames = { 'HPC',...
 DD = '/media/data/SIPAlireza/Jamz/';
 rootResultPath = uigetdir(DD,'Please choose a destination folder for results');
 
-DesignName = 'BlockBased';
+
 
 %% RSA for Song BlockBased within Subj between Conditions
+DesignName = 'BlockBased';
 SessName = 'Song';
 RSA_WithinSubjBetweenConds_Jan23;
 disp('############################')
 
 
 %% RSA for Word BlockBased within Subj between Conditions
+DesignName = 'BlockBased';
+SessName = 'Word';
+RSA_WithinSubjBetweenConds_Jan23;
+disp('############################')
+
+
+%% RSA for Song EventRelated within Subj between Conditions
+DesignName = 'EventRelated';
+SessName = 'Song';
+RSA_WithinSubjBetweenConds_Jan23;
+disp('############################')
+
+
+%% RSA for Word EventRelated within Subj between Conditions
+DesignName = 'EventRelated';
 SessName = 'Word';
 RSA_WithinSubjBetweenConds_Jan23;
 disp('############################')
