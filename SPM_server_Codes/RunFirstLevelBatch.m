@@ -2,16 +2,6 @@
 % First Level Analysis batch
 %-----------------------------------------------------------------------
 
-% oldPWD = pwd;
-% Scans = cell(1,length(IDs));
-% mvRegs = cell(1,length(IDs));
-% for Sid = 1:length(IDs)
-%     if(includeSubj(Sid))
-%         dirS = [Dir,Sep,IDs{Sid},Sep,SessFoldeName,Sep];
-%         [Scans{Sid},mvRegs{Sid}] = FileLocations(dirS,FormatPrep);
-%     end
-% end
-
 disp(['Running First Level Analysis for ', SessName])
 spm('defaults', 'FMRI');
 SessionID  = 1;

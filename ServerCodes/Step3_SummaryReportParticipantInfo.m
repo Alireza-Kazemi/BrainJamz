@@ -7,6 +7,7 @@ ID = [];
 sex = [];
 age = [];
 expDate = [];
+birthD = [];
 songPrep = [];
 songVols = [];
 songGroup = [];
@@ -22,9 +23,10 @@ Extension_IDs = string([155, 166, 169, 192, 199, 206, 208, 209, 210, 216,218, 21
 
 
 for ind = 1:length(Info.PID)
-    ID = cat(1,ID,string(Info.PID{ind}));
-    sex = cat(1,sex,Info.Sex(ind));
+    ID = cat(1,ID,string(['S',Info.PID{ind}]));
+    sex = cat(1,sex,string(char(Info.Sex(ind))));
     age = cat(1,age,Info.age(ind));
+    birthD = cat(1,birthD,Info.BirthD(ind));
     expDate = cat(1,expDate,Info.ExpDate(ind));
     songVols = cat(1,songVols,size(Info.Song_path{ind},1));
     songPrep = cat(1,songPrep,Info.SongComputed(ind));
@@ -40,7 +42,11 @@ for ind = 1:length(Info.PID)
     wordPrep = cat(1,wordPrep,Info.WordComputed(ind));
     includeWord = cat(1,includeWord,Info.WordComputed(ind));
 end
-T = table(ID,sex,age,expDate,songVols,songPrep,songGroup,includeSong,wordVols,wordPrep,includeWord);
+ID = replace(ID," ","");
+ageFrac = yearfrac(birthD,expDate);
+birthD = string(datestr(birthD));
+expDate = string(datestr(expDate));
+T = table(ID,sex,age,ageFrac,birthD,expDate,songVols,songPrep,songGroup,includeSong,wordVols,wordPrep,includeWord);
 Info.TrackTable = T;
 Info.includeSong = includeSong;
 Info.includeWord = includeWord;
