@@ -350,7 +350,7 @@ cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
 t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 
 
-########################### Song EventRelated Within Condition All Masks ##########################
+########################### Song EventRelated test ##########################
 sDat = SongER
 unique(sDat$Conditions)
 sDat = sDat[sDat$Mask=="HPC",]
