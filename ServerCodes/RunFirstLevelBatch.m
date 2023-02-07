@@ -11,7 +11,7 @@
 %         [Scans{Sid},mvRegs{Sid}] = FileLocations(dirS,FormatPrep);
 %     end
 % end
-
+cd(ResultPath);
 disp(['Running First Level Analysis for ', SessName])
 spm('defaults', 'FMRI');
 SessionID  = 1;
@@ -44,7 +44,7 @@ for Sid = 1:length(IDs)
     matlabbatch{1}.spm.stats.fmri_spec.volt = 1;
     matlabbatch{1}.spm.stats.fmri_spec.global = 'Scaling';
     matlabbatch{1}.spm.stats.fmri_spec.mthresh = 0.8;
-    matlabbatch{1}.spm.stats.fmri_spec.mask = {'/home/kazemi/Documents/MATLAB/spm12/tpm/mask_ICV.nii,1'};
+    matlabbatch{1}.spm.stats.fmri_spec.mask = Mask; %{'/home/kazemi/Documents/MATLAB/spm12/tpm/mask_ICV.nii,1'};
     matlabbatch{1}.spm.stats.fmri_spec.cvi = 'AR(1)';
 
     matlabbatch{2}.spm.stats.fmri_est.spmmat(1) = cfg_dep('fMRI model specification: SPM.mat File', substruct('.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','spmmat'));

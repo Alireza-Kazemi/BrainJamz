@@ -32,17 +32,19 @@ for maskID = 1:length(MaskNames)
     mask{maskID} = spm_vol(readPath);
 end
 
-%% TimeSeries for Songs
-DesignName = 'BlockBased';
+%% MicroEvent BlockBased based on EventRelated Design Songs
+DesignName = 'EventRelated';
 SessName = 'Song';
-TimeSeries_Extraction_Jan23;
+conditionNames = {'baseline', 'novel', 'reverse', 'target'};
+MicroEventBetaComputation_Jan23;
 clear  TimeSeries
 disp('############################')
 
-%% TimeSeries for Words
-DesignName = 'BlockBased';
+%% MicroEvent BlockBased based on EventRelated Design Words
+DesignName = 'EventRelated';
 SessName = 'Word';
-TimeSeries_Extraction_Jan23;
+conditionNames = {'baseline', 'known', 'unknown', 'target'};
+MicroEventBetaComputation_Jan23;
 clear  TimeSeries
 disp('############################')
 
