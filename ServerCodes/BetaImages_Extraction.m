@@ -23,7 +23,7 @@ for sID = 1:length(IDs)
         for maskIdx=1:length(MaskNames)
             betaImg = [];
             for betaImgIdx = 1:length(betaNames)
-                if(contains(betaNames{betaImgIdx},conditionNames{conditionIdx}))
+                if(contains(betaNames{betaImgIdx},[conditionNames{conditionIdx},'*']))
                     scan = SPM.Vbeta(betaImgIdx);
                     scan.fname = [ResultPath,Sep,resultFolderNameTag,IDs{sID},Sep,scan.fname];
                     Masked = spm_mask_MyVersion(mask{maskIdx}, scan, maskingthreshold);
