@@ -378,11 +378,12 @@ ggplot(sDat,aes(x=timeCond, y=CorrVal, fill = Conditions)) +
 sDat = WordER
 unique(sDat$Conditions)
 sDat = sDat[sDat$Mask=="HPC",]
-sDat = sDat[sDat$Conditions %in% c("target", "known", "unknown", "baseline"),]
+sDat = sDat[sDat$Conditions %in% c("target", "known", "unknown", "baseline",
+                                   "target_known", "target_unknown", "known_unknown"),]
 sDat$CorrVal = abs(sDat$CorrVal);
-sDat = sDat[sDat$T1==6,]
+sDat = sDat[sDat$timeCond==2,]
 
-ggplot(sDat,aes(x=T2, y=CorrVal, fill = Conditions)) + 
+ggplot(sDat,aes(x=Conditions, y=CorrVal, fill = Conditions)) + 
   geom_bar(stat="summary",fun="mean",position="dodge")+
   stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
   facet_grid(~Mask)+
