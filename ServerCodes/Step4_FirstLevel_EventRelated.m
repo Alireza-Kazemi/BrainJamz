@@ -23,6 +23,7 @@ SessionNum=1;
 %% Load Information data
 load ParticipantsInfoJan23.mat
 
+Mask = {'/home/kazemi/Documents/MATLAB/spm12/tpm/mask_ICV.nii,1'};
 
 %% First Level Analysis EventRelated
 FormatPrep = 'wra';% a for Slicetime, r for realignment, w for normalization, s for smoothing

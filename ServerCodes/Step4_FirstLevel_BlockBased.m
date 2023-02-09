@@ -23,6 +23,7 @@ SessionNum=1;
 %% Load Information data
 load ParticipantsInfoJan23.mat
 
+Mask = {'/home/kazemi/Documents/MATLAB/spm12/tpm/mask_ICV.nii,1'};
 
 %% First Level Analysis BlockBased
 FormatPrep = 'wra';% a for Slicetime, r for realignment, w for normalization, s for smoothing
@@ -37,7 +38,7 @@ Dir = Info.Dir;
 includeSubj = Info.includeSong;
 SessName = 'Song';
 designFileNameTag = ['_',SessName];
-SessFoldeName = [SessName,'_raw'];
+SessFolderName = [SessName,'_raw'];
 ResultPath = [rootResultPath,Sep,DesignName,Sep,SessName];
 mkdir(ResultPath)
 
@@ -53,7 +54,7 @@ cd(oldPWD)
 includeSubj = Info.includeWord;
 SessName = 'Word';
 designFileNameTag = ['_',SessName];
-SessFoldeName = [SessName,'_raw'];
+SessFolderName = [SessName,'_raw'];
 ResultPath = [rootResultPath,Sep,DesignName,Sep,SessName];
 mkdir(ResultPath)
 
