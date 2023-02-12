@@ -25,9 +25,9 @@ load ParticipantsInfoJan23.mat
 
 Mask = {'/home/kazemi/Documents/MATLAB/spm12/tpm/mask_ICV.nii,1'};
 
-%% First Level Analysis EventRelated
+%% First Level Analysis BlockBased
 FormatPrep = 'wra';% a for Slicetime, r for realignment, w for normalization, s for smoothing
-DesignName = 'EventRelated';
+DesignName = 'BlockEvent';
 DD = '/media/data/SIPAlireza/';
 DesignPath = uigetdir(DD,'Please choose the folder of Design .mat files');
 rootResultPath = uigetdir(DD,'Please choose a destination folder for results');
@@ -35,8 +35,8 @@ IDs = Info.IDs;
 Dir = Info.Dir;
 
 % -------------------------------------> Songs
-includeSubj = Info.includeSong;
 SessName = 'Song';
+includeSubj = Info.(['include',SessName]);
 designFileNameTag = ['_',SessName];
 SessFolderName = [SessName,'_raw'];
 ResultPath = [rootResultPath,Sep,DesignName,Sep,SessName];
@@ -51,8 +51,8 @@ RunFirstLevelBatch;
 cd(oldPWD)
 
 % -------------------------------------> Wrods
-includeSubj = Info.includeWord;
 SessName = 'Word';
+includeSubj = Info.(['include',SessName]);
 designFileNameTag = ['_',SessName];
 SessFolderName = [SessName,'_raw'];
 ResultPath = [rootResultPath,Sep,DesignName,Sep,SessName];

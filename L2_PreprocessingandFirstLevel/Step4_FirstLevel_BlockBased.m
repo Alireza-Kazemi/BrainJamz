@@ -1,6 +1,13 @@
-% First Level Analysis BlockBased
-% Developed by Alireza Kazemi 2023
+% Main Run
+% FileLocations
+%
+% This function returns the location of images
+% 
+% Developed by Alireza Kazemi 2019
 % kazemi@ucdavis.edu 
+%
+% For Future the PAth of the SPM should be determined automatically in the 
+% preprocessing step.
 %
 clear;
 clc;
@@ -16,6 +23,7 @@ SessionNum=1;
 %% Load Information data
 load ParticipantsInfoJan23.mat
 
+Mask = {'/home/kazemi/Documents/MATLAB/spm12/tpm/mask_ICV.nii,1'};
 
 %% First Level Analysis BlockBased
 FormatPrep = 'wra';% a for Slicetime, r for realignment, w for normalization, s for smoothing
@@ -30,7 +38,7 @@ Dir = Info.Dir;
 includeSubj = Info.includeSong;
 SessName = 'Song';
 designFileNameTag = ['_',SessName];
-SessFoldeName = [SessName,'_raw'];
+SessFolderName = [SessName,'_raw'];
 ResultPath = [rootResultPath,Sep,DesignName,Sep,SessName];
 mkdir(ResultPath)
 
@@ -46,7 +54,7 @@ cd(oldPWD)
 includeSubj = Info.includeWord;
 SessName = 'Word';
 designFileNameTag = ['_',SessName];
-SessFoldeName = [SessName,'_raw'];
+SessFolderName = [SessName,'_raw'];
 ResultPath = [rootResultPath,Sep,DesignName,Sep,SessName];
 mkdir(ResultPath)
 
