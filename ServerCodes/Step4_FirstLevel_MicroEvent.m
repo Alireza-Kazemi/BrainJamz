@@ -24,28 +24,27 @@ SessionNum=1;
 load ParticipantsInfoJan23.mat
 
 
-%% First Level Analysis EventRelated
+%% First Level Analysis Micro Events Block Based
 FormatPrep = 'wra';% a for Slicetime, r for realignment, w for normalization, s for smoothing
-DesignName = 'PermMicroEvents';
-eventTagName = '_Perm';
+DesignName = 'MicroEvent';
+eventTagName = '_ME';
 DD = '/media/data/SIPAlireza/';
 DesignPath = uigetdir(DD,'Please choose the folder of Design .mat files');
 rootResultPath = uigetdir(DD,'Please choose a destination folder for results');
 IDs = Info.IDs;
 Dir = Info.Dir;
 
-Mask = {'/home/kazemi/Documents/MATLAB/spm12/tpm/mask_ICV.nii,1'};
+Mask = {'/media/data/SIPAlireza/Jamz/MasksJan23/HPC.nii'};
 % -------------------------------------> Songs
 SessName = 'Song';
 SessFolderName = [SessName,'_raw'];
-for mEIdx = 1:5
+for mEIdx = 1:20
     mENameTag = [eventTagName,num2str(mEIdx)];
     includeSubj = Info.(['include',SessName]);
     designFileNameTag = ['_',SessName,mENameTag];
     ResultPath = [rootResultPath,Sep,DesignName,Sep,SessName,mENameTag];
     mkdir(ResultPath)
-    copyfile('DeleteResiduals.sh',[ResultPath,Sep])
-    [status,cmdout]  = system(['bash ',ResultPath,Sep,'DeleteResiduals.sh'])
+    
     disp('################################################')
     disp('################################################')
     disp('################################################')
@@ -57,7 +56,7 @@ end
 % -------------------------------------> Words
 SessName = 'Word';
 SessFolderName = [SessName,'_raw'];
-for mEIdx = 1:5
+for mEIdx = 1:20
     mENameTag = [eventTagName,num2str(mEIdx)];
     includeSubj = Info.(['include',SessName]);
     designFileNameTag = ['_',SessName,mENameTag];

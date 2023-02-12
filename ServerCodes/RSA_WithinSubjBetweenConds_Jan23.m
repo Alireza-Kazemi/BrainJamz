@@ -1,13 +1,8 @@
 %----> Compute RSA within Subj between Conditions Spatial Correlations
-%% Load SPM Data
-includeSubj = Info.(['include',SessName]);
-load([rootResultPath,Sep,'BetaImages',DesignName,'_',SessName,'.mat']);
+
 
 %% Compute RSA
-Subj = [];
-Conditions = [];
-Mask = [];
-CorrVal = [];
+datTable = [];
 
 for sID = 1:length(IDs)
     disp([num2str(sID),'/',num2str(length(IDs)),' RSA ',DesignName,'_',SessName,' for Subject: ', IDs{sID}])
@@ -16,6 +11,10 @@ for sID = 1:length(IDs)
         continue;
     end
     for maskIdx = 1:length(MaskNames)
+        Subj = [];
+        Conditions = [];
+        Mask = [];
+        CorrVal = [];
         conditionNames = fieldnames(betaImage.(['S',IDs{sID}]).(MaskNames{maskIdx}));
         for conditionIdx1 = 1:(length(conditionNames)-1)
             for conditionIdx2 = (conditionIdx1+1):length(conditionNames)
@@ -32,10 +31,11 @@ for sID = 1:length(IDs)
                 CorrVal = cat(1,CorrVal,CorrROI);
             end
         end
+        datTable = cat(1,datTable,table(Subj,Conditions,Mask,CorrVal));
     end
 end
 
 %% Save Output in CSV format
-datTable = table(Subj,Conditions,Mask,CorrVal);
+
 writetable(datTable,[rootResultPath,Sep,'RSA_',DesignName,'_',SessName,'.csv']);
 disp(['Results Saved ---> ',rootResultPath,Sep,'RSA_',DesignName,'_',SessName,'.csv'])

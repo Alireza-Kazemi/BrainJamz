@@ -1,7 +1,6 @@
 %% Beta Image Extraction from SPM.mat Jan2023 Version
 
-includeSubj = Info.(['include',SessName]);
-ResultPath = [rootResultPath,Sep,DesignName,Sep,SessName];
+
 %% Extract BetaImages
 
 resultFolderNameTag = 'FirstLevel_';

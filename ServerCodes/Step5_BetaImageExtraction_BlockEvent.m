@@ -45,32 +45,22 @@ for maskID = 1:length(MaskNames)
 end
 
 %% -------------------------->BlockBased Songs
-DesignName = 'BlockBased';
+DesignName = 'BlockEvent';
 SessName = 'Song';
+includeSubj = Info.(['include',SessName]);
+ResultPath = [rootResultPath,Sep,DesignName,Sep,SessName];
 
 BetaImages_Extraction;
 clear betaImage
 disp('############################')
 
 %% -------------------------->BlockBased Word
-DesignName = 'BlockBased';
+DesignName = 'BlockEvent';
 SessName = 'Word';
+includeSubj = Info.(['include',SessName]);
+ResultPath = [rootResultPath,Sep,DesignName,Sep,SessName];
 
 BetaImages_Extraction;
 clear betaImage
 disp('############################')
 
-%% -------------------------->EventRelated Songs
-DesignName = 'EventRelated';
-SessName = 'Song';
-
-BetaImages_Extraction;
-clear betaImage
-disp('############################')
-%% -------------------------->EventRelated Word
-DesignName = 'EventRelated';
-SessName = 'Word';
-
-BetaImages_Extraction;
-clear betaImage
-disp('############################')
