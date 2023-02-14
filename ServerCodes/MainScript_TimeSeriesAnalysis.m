@@ -27,9 +27,7 @@ else
 	    'novel'}; %..4
 end          
 %% Similarity Parameters
-% wnSize = 10;
-% wnD = [1,10]; %Window star scan
-tsWindows = 3; %first 10 scans, last 10 scans and all scans
+
 
 %% Compute Within Subject Within Condition Spatial Correlations
 Subj = [];

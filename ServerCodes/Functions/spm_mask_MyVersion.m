@@ -1,4 +1,4 @@
-function maskedVol = spm_mask_MyVersion(V1, V2, thresh)
+function [maskedVol, mask] = spm_mask_MyVersion(V1, V2, thresh)
 % Mask images  Based on spm_mask function
 % FORMAT spm_mask(P1, P2, thresh)
 % P1     - matrix of input image filenames from which

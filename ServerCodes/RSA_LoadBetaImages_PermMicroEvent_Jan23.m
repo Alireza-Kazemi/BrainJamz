@@ -14,9 +14,9 @@ for mEIdx = 1:5
         end
         for maskIdx = 1:length(MaskNames)
             conditionNames = fieldnames(betaImage.(['S',IDs{sID}]).(MaskNames{maskIdx}));
-            for conditionIdx1 = 1:(length(conditionNames)-1)
-                betaTemp.(['S',IDs{sID}]).(MaskNames{maskIdx}).([conditionNames{conditionIdx1},'_',num2str(mEIdx)]).Beta = ...
-                betaImage.(['S',IDs{sID}]).(MaskNames{maskIdx}).(conditionNames{conditionIdx1}).Beta(:,1);
+            for conditionIdx = 1:length(conditionNames)
+                betaTemp.(['S',IDs{sID}]).(MaskNames{maskIdx}).([conditionNames{conditionIdx},'_',num2str(mEIdx)]).Beta = ...
+                betaImage.(['S',IDs{sID}]).(MaskNames{maskIdx}).(conditionNames{conditionIdx}).Beta(:,1);
             end
         end
     end
