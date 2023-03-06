@@ -1149,3 +1149,69 @@ ggplot(sDat,aes(x=Conditions, y=CorrVal, fill = Conditions)) +
   theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
   theme(legend.text = element_text(size = 16))+
   theme(axis.title.y = element_text(size = 18))
+
+
+####################################### Correlations with Behavior -----------
+sDat = SongPME
+unique(sDat$Conditions)
+sDat = sDat[sDat$Conditions %in% c("target","reverse","novel","baseline"),]
+sDat = sDat[!(sDat$Conditions %in% c("target","reverse","novel","baseline")),]
+
+# sDat = sDat[sDat$songGroup %in% c("Replication","Extension"),]
+sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat = sDat[sDat$Mask=="HPC",]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,PermCond),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions),CorrVal = mean(CorrVal,na.rm = T)))
+
+data_Corr = sDat
+
+data_Corr = reshape2::dcast(data_Corr,Subj ~ Conditions, value.var="CorrVal")
+
+data_Corr$Subj = as.numeric(sub("S","",data_Corr$Subj, ignore.case = T))
+
+datTime      = read.csv("Behavioral_Time.csv",sep = ",",header=TRUE,strip.white=TRUE)
+datSpace      = read.csv("Behavioral_Space.csv",sep = ",",header=TRUE,strip.white=TRUE)
+
+trialB = "Merge234"#"trial2"#
+datTime = datTime[,c("subjID",trialB)]
+names(datTime) = c("Subj","Time")
+datSpace = datSpace[,c("subjID",trialB)]
+names(datSpace) = c("Subj","Space")
+
+corrMatDat = merge(datTime,datSpace,by = "Subj")
+corrMatDat = merge(corrMatDat,data_Corr,by = "Subj")
+
+corrMatDat = corrMatDat[,-1]
+pairs.panels(corrMatDat, scale=FALSE,cex.cor=2,stars=TRUE,cex.labels=2)
+
+
+####################################### Correlations with Behavior -----------
+sDat = SongBE
+unique(sDat$Conditions)
+sDat = sDat[sDat$Conditions %in% c("target","reverse","novel","baseline"),]
+sDat = sDat[!(sDat$Conditions %in% c("target","reverse","novel","baseline")),]
+
+# sDat = sDat[sDat$songGroup %in% c("Replication","Extension"),]
+sDat = sDat[sDat$Mask=="HPC",]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions),CorrVal = mean(CorrVal,na.rm = T)))
+
+data_Corr = sDat
+
+data_Corr = reshape2::dcast(data_Corr,Subj ~ Conditions, value.var="CorrVal")
+
+data_Corr$Subj = as.numeric(sub("S","",data_Corr$Subj, ignore.case = T))
+
+datTime      = read.csv("Behavioral_Time.csv",sep = ",",header=TRUE,strip.white=TRUE)
+datSpace      = read.csv("Behavioral_Space.csv",sep = ",",header=TRUE,strip.white=TRUE)
+
+trialB = "Merge234"#"trial2"#
+datTime = datTime[,c("subjID",trialB)]
+names(datTime) = c("Subj","Time")
+datSpace = datSpace[,c("subjID",trialB)]
+names(datSpace) = c("Subj","Space")
+
+corrMatDat = merge(datTime,datSpace,by = "Subj")
+corrMatDat = merge(corrMatDat,data_Corr,by = "Subj")
+
+corrMatDat = corrMatDat[,-1]
+pairs.panels(corrMatDat, scale=FALSE,cex.cor=2,stars=TRUE,cex.labels=2)
