@@ -34,7 +34,7 @@ p_load(reshape2,
        performance,stringr,
        export,
        data.table)
-
+# p_load(psych,plyr,psych,MCMCpack)
 
 RD = "D:\\Projects\\BrainJamz\\DataFiles\\L4_RSA\\"
 WD = "D:\\Projects\\BrainJamz\\DataFiles\\L4_RSA\\"
