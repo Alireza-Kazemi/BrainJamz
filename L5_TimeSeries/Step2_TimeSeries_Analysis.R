@@ -71,6 +71,12 @@ data_Corr$Conditions = factor(data_Corr$Conditions,
 
 Song_InterVoxelSim = data_Corr
 
+data_Corr      = read.csv(paste(RD,"Song_InterVoxelSimFLHalf_ForR.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+data_Corr$Conditions = factor(data_Corr$Conditions, 
+                              levels = c("target", "reverse", "novel","baseline"))
+
+Song_InterVoxelSimFLHalf = data_Corr
+
 data_Corr      = read.csv(paste(RD,"Song_AverageTimeSeries_ForR.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
 data_Corr$Conditions = factor(data_Corr$Conditions, 
                               levels = c("target", "reverse", "novel","baseline"))
@@ -90,6 +96,12 @@ data_Corr$Conditions = factor(data_Corr$Conditions,
                               levels = c("target", "known", "unknown","baseline"))
 
 Word_InterVoxelSim = data_Corr
+
+data_Corr      = read.csv(paste(RD,"Word_InterVoxelSimFLHalf_ForR.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+data_Corr$Conditions = factor(data_Corr$Conditions, 
+                              levels = c("target", "known", "unknown","baseline"))
+
+Word_InterVoxelSimFLHalf = data_Corr
 
 data_Corr      = read.csv(paste(RD,"Word_AverageTimeSeries_ForR.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
 data_Corr$Conditions = factor(data_Corr$Conditions, 
@@ -202,6 +214,29 @@ ggplot(sDat,aes(x=Interpolated, y=CorrVal, fill = Conditions)) +
   theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
   theme(legend.text = element_text(size = 16))+
   theme(axis.title.y = element_text(size = 18))
+
+########################### Song InterVoxelSim FLHALF ##########################
+sDat = Song_InterVoxelSimFLHalf
+unique(sDat$Conditions)
+names(sDat)
+
+sDat = sDat[sDat$songGroup %in% c("Replication","Extension"),]
+
+# sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,songGroup,Interpolated),CorrVal = mean(CorrVal,na.rm = T)))
+
+ggplot(sDat,aes(x=Interpolated, y=CorrVal, fill = Conditions)) + 
+  geom_bar(stat="summary",fun="mean",position="dodge")+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
+  facet_grid(songGroup~Mask)+
+  theme_bw(base_family = "serif")+
+  theme(strip.text.x = element_text(size=16, face="bold"))+
+  theme(strip.text.y = element_text(size=16, face="bold"))+
+  labs(x="",y="Pearson's Correlation Coefficient", size=16)+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(legend.text = element_text(size = 16))+
+  theme(axis.title.y = element_text(size = 18))
+
+
 ########################### Word InterVoxelSim ##########################
 sDat = Word_InterVoxelSim
 unique(sDat$Conditions)
@@ -238,8 +273,11 @@ graphDatTR = PermutationTestDataPrep_HMLET(sDat[sDat$Interpolated==0,],ID = "Sub
 graphDatInterp = PermutationTestDataPrep_HMLET(sDat[sDat$Interpolated==1,],ID = "Subj", trial = "blockIndex",
                                                condition = "Conditions", timepoint = "timePoints",
                                                gazeInAOI = "CorrVal",testName = "songGroup")
-PlotTemporalGazeTrends_HMLET(graphDatTR)
-PlotTemporalGazeTrends_HMLET(graphDatInterp)
+P = PlotTemporalGazeTrends_HMLET(graphDatTR,showDataPointNumbers = F)
+plot(P)
+P + ylab("Similarity")
+
+PlotTemporalGazeTrends_HMLET(graphDatInterp,showDataPointNumbers = F)
 
 
 sDat = Song_StepWiseRSA
@@ -291,9 +329,9 @@ sDat = sDat[sDat$songGroup %in% c("Replication","Extension"),]
 sDat = sDat[sDat$Mask=="HPC",]
 sDat = reshape2::dcast(sDat,Subj+songGroup+Mask+blockIndex+Interpolated+timePoints~Conditions, value.var = "CorrVal")
 
-sDat$Target_Baseline = sDat$target-sDat$baseline
-sDat$Reverse_Baseline = sDat$reverse-sDat$baseline
-sDat$Novel_Baseline = sDat$novel-sDat$baseline
+sDat$Target_Baseline = (sDat$target)/(sDat$novel+sDat$reverse+sDat$target+sDat$baseline)
+sDat$Reverse_Baseline = sDat$reverse/(sDat$novel+sDat$reverse+sDat$target+sDat$baseline)
+sDat$Novel_Baseline = sDat$novel/(sDat$novel+sDat$reverse+sDat$target+sDat$baseline)
 sDat = sDat[,!(names(sDat)%in%c("target","reverse","novel","baseline"))]
 sDat = reshape2::melt(sDat,id.vars = c("Subj","songGroup","Mask","blockIndex","Interpolated","timePoints"), 
                       variable.name = "Conditions", value.name = "CorrVal")
@@ -338,7 +376,9 @@ graphDatTR = PermutationTestDataPrep_HMLET(sDat[sDat$Interpolated==0,],ID = "Sub
 graphDatInterp = PermutationTestDataPrep_HMLET(sDat[sDat$Interpolated==1,],ID = "Subj", trial = "blockIndex",
                                                condition = "Conditions", timepoint = "timePoints",
                                                gazeInAOI = "CorrVal",testName = "Mask")
-PlotTemporalGazeTrends_HMLET(graphDatTR)
+P = PlotTemporalGazeTrends_HMLET(graphDatTR,showDataPointNumbers = F)
+plot(P)
+P + ylab("Similarity")
 PlotTemporalGazeTrends_HMLET(graphDatInterp)
 
 
@@ -436,9 +476,12 @@ graphDatTR = PermutationTestDataPrep_HMLET(sDat[sDat$Interpolated==0,],ID = "Sub
 graphDatInterp = PermutationTestDataPrep_HMLET(sDat[sDat$Interpolated==1,],ID = "Subj", trial = "blockIndex",
                                                condition = "Conditions", timepoint = "timePoints",
                                                gazeInAOI = "BoldVal",testName = "songGroup")
-PlotTemporalGazeTrends_HMLET(graphDatTR)
-PlotTemporalGazeTrends_HMLET(graphDatInterp)
-
+P = PlotTemporalGazeTrends_HMLET(graphDatTR,showDataPointNumbers = F)
+plot(P)
+P + ylab("Bold Signal")
+P = PlotTemporalGazeTrends_HMLET(graphDatInterp,showDataPointNumbers = F)
+plot(P)
+P + ylab("Bold Signal")
 
 sDat = Song_AverageTimeSeries
 unique(sDat$Conditions)
@@ -537,7 +580,9 @@ graphDatInterp = PermutationTestDataPrep_HMLET(sDat[sDat$Interpolated==1,],ID = 
                                                condition = "Conditions", timepoint = "timePoints",
                                                gazeInAOI = "BoldVal",testName = "Mask")
 PlotTemporalGazeTrends_HMLET(graphDatTR)
-PlotTemporalGazeTrends_HMLET(graphDatInterp)
+P = PlotTemporalGazeTrends_HMLET(graphDatInterp,showDataPointNumbers = F)
+plot(P)
+P + ylab("Bold Signal")
 
 
 sDat = Word_AverageTimeSeries
@@ -621,4 +666,102 @@ ggplot(sDat[sDat$Interpolated==0,],aes(x=Conditions, y=BoldVal, fill = Condition
   theme(legend.text = element_text(size = 16))+
   theme(axis.title.y = element_text(size = 18))
 
+####################################### Correlations with Behavior time Song Block Event-----------
+sDat = Song_StepWiseRSA
+sDat = sDat[sDat$Interpolated==0,]
+unique(sDat$Conditions)
+names(sDat)
+sDat = sDat[sDat$Mask=="HPC",]
+SelectCond = "baseline" ; # "target", "reverse" , "novel" , "baseline"
+sDat = sDat[sDat$Conditions %in% SelectCond,] 
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,timePoints),CorrVal = mean(CorrVal,na.rm = T)))
 
+data_Corr = sDat
+
+data_Corr = reshape2::dcast(data_Corr,Subj ~ Conditions+timePoints, value.var="CorrVal")
+
+data_Corr$Subj = as.numeric(sub("S","",data_Corr$Subj, ignore.case = T))
+
+datTime      = read.csv(paste(RD,"Behavioral_Time.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
+datSpace      = read.csv(paste(RD,"Behavioral_Space.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
+
+trialB = "Merge234"#"trial2"#
+datTime = datTime[,c("subjID",trialB)]
+names(datTime) = c("Subj","Time")
+datSpace = datSpace[,c("subjID",trialB)]
+names(datSpace) = c("Subj","Space")
+
+corrMatDat = merge(datTime,datSpace,by = "Subj")
+corrMatDat = merge(corrMatDat,data_Corr,by = "Subj")
+corrMatDat = corrMatDat[complete.cases(corrMatDat),]
+corrMatDat = corrMatDat[,-1]
+# pairs.panels(corrMatDat, scale=FALSE,cex.cor=2,stars=TRUE,cex.labels=2)
+Cors = cor(corrMatDat,method = "pearson")
+X = Cors[1,]
+X = X[c(-1,-2)]
+mean(X)
+plot(X,type = "l",ylab = SelectCond, xlab = "Time")
+
+####################################### Correlations with Behavior Space Song Block Event-----------
+sDat = Song_StepWiseRSA
+sDat = sDat[sDat$Interpolated==0,]
+unique(sDat$Conditions)
+names(sDat)
+sDat = sDat[sDat$Mask=="HPC",]
+SelectCond = "novel" ; # "target", "reverse" , "novel" , "baseline"
+sDat = sDat[sDat$Conditions %in% SelectCond,] 
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,timePoints),CorrVal = mean(CorrVal,na.rm = T)))
+
+data_Corr = sDat
+
+data_Corr = reshape2::dcast(data_Corr,Subj ~ Conditions+timePoints, value.var="CorrVal")
+
+data_Corr$Subj = as.numeric(sub("S","",data_Corr$Subj, ignore.case = T))
+
+datTime      = read.csv(paste(RD,"Behavioral_Time.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
+datSpace      = read.csv(paste(RD,"Behavioral_Space.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
+
+trialB = "Merge234"#"trial2"#
+datTime = datTime[,c("subjID",trialB)]
+names(datTime) = c("Subj","Time")
+datSpace = datSpace[,c("subjID",trialB)]
+names(datSpace) = c("Subj","Space")
+
+corrMatDat = merge(datTime,datSpace,by = "Subj")
+corrMatDat = merge(corrMatDat,data_Corr,by = "Subj")
+corrMatDat = corrMatDat[complete.cases(corrMatDat),]
+corrMatDat = corrMatDat[,-1]
+# pairs.panels(corrMatDat, scale=FALSE,cex.cor=2,stars=TRUE,cex.labels=2)
+Cors = cor(corrMatDat,method = "pearson")
+X = Cors[2,]
+X = X[c(-1,-2)]
+mean(X)
+plot(X,type = "l",ylab = SelectCond, xlab = "Time")
+####################################### Correlations with Behavior Word Permutation-----------
+sDat = Word_StepWiseRSA
+sDat = sDat[sDat$Interpolated==0,]
+unique(sDat$Conditions)
+names(sDat)
+sDat = sDat[sDat$Mask=="HPC",]
+SelectCond = "target" ; # "target", "known" , "unknown" , "baseline"
+sDat = sDat[sDat$Conditions %in% SelectCond,] 
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,timePoints),CorrVal = mean(CorrVal,na.rm = T)))
+
+data_Corr = sDat
+
+data_Corr = reshape2::dcast(data_Corr,Subj ~ Conditions+timePoints, value.var="CorrVal")
+
+data_Corr$Subj = as.numeric(sub("S","",data_Corr$Subj, ignore.case = T))
+
+datWord      = read.csv(paste(RD,"Behavioral_MacWord.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
+names(datWord) = c("Subj","MacWord")
+
+corrMatDat = merge(datWord,data_Corr,by = "Subj")
+corrMatDat = corrMatDat[complete.cases(corrMatDat),]
+corrMatDat = corrMatDat[,-1]
+# pairs.panels(corrMatDat, scale=FALSE,cex.cor=2,stars=TRUE,cex.labels=2)
+Cors = cor(corrMatDat,method = "pearson")
+X = Cors[1,]
+X = X[c(-1)]
+mean(X)
+plot(X,type = "l",ylab = SelectCond, xlab = "Time")

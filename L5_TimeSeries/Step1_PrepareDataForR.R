@@ -49,6 +49,15 @@ unique(data_Corr$Conditions)
 
 write.csv(data_Corr,paste(RD,"Song_InterVoxelSim_ForR.csv",sep=""), row.names = F)
 
+########################### Prepare Song IntervoxelSimilarities FLHalf #################
+data_Corr      = read.csv(paste(RD,"TimeSeries_InterVoxelSim_Song_FLHalf.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+songTrack      = read.csv(paste(RD,"TrackTable.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+songTrack$Subj = songTrack$ID
+data_Corr = merge(data_Corr,songTrack[,c("Subj","songGroup")],by = "Subj")
+unique(data_Corr$Conditions)
+
+write.csv(data_Corr,paste(RD,"Song_InterVoxelSimFLHalf_ForR.csv",sep=""), row.names = F)
+
 ########################### Prepare Song StepWiseRSA Data and Save #################
 data_Corr      = read.csv(paste(RD,"TimeSeries_StepWiseRSA_Song.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
 songTrack      = read.csv(paste(RD,"TrackTable.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
@@ -69,6 +78,15 @@ write.csv(data_Corr,paste(RD,"Song_AverageTimeSeries_ForR.csv",sep=""), row.name
 
 
 ########################### Prepare Word IntervoxelSimilarities Data and Save #################
+data_Corr      = read.csv(paste(RD,"TimeSeries_InterVoxelSim_Word_FLHalf.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+data_Corr$Conditions = factor(data_Corr$Conditions, 
+                              levels = c("target", "Known", "Unknown","baseline"),
+                              labels = c("target", "known", "unknown","baseline"))
+unique(data_Corr$Conditions)
+
+write.csv(data_Corr,paste(RD,"Word_InterVoxelSimFLHalf_ForR.csv",sep=""), row.names = F)
+
+########################### Prepare Word IntervoxelSimilarities FLHalf #################
 data_Corr      = read.csv(paste(RD,"TimeSeries_InterVoxelSim_Word.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
 data_Corr$Conditions = factor(data_Corr$Conditions, 
                               levels = c("target", "Known", "Unknown","baseline"),
@@ -94,3 +112,5 @@ data_Corr$Conditions = factor(data_Corr$Conditions,
 unique(data_Corr$Conditions)
 
 write.csv(data_Corr,paste(RD,"Word_AverageTimeSeries_ForR.csv",sep=""), row.names = F)
+
+
