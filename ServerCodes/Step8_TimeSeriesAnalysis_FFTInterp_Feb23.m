@@ -16,34 +16,24 @@ Dir = Info.Dir;
 DD = '/media/data/SIPAlireza/Jamz/';
 rootResultPath = uigetdir(DD,'Please choose a destination folder for results');
 
-resultNames = 'TimeSeries';
+resultNames = 'TimeSeriesInterp';
 %% Load Masks
 MaskNames = { 'HPC',...
               'aMPFCSphere',...
               'aMTL',...
               'Auditory'}; 
 
-MaskPath   = uigetdir(DD,'Please select the folder contains Mask.nii files');
-
-mask = cell(1,length(MaskNames));
-for maskID = 1:length(MaskNames)
-    readPath = [MaskPath,Sep,MaskNames{maskID},'.nii'];
-    mask{maskID} = spm_vol(readPath);
-end
-
 %% TimeSeries for Songs
-
 SessName = 'Song';
 load([rootResultPath,Sep,resultNames,'_',SessName,'.mat']);
 
-TimeSeries_Extraction_Jan23;
-clear  TimeSeries
+TimeSeries_VoxelWiseTimeCourseAnalysis_Feb23
 disp('############################')
 
 %% TimeSeries for Words
-DesignName = 'BlockBased';
 SessName = 'Word';
-TimeSeries_Extraction_Jan23;
-clear  TimeSeries
+load([rootResultPath,Sep,resultNames,'_',SessName,'.mat']);
+
+TimeSeries_VoxelWiseTimeCourseAnalysis_Feb23
 disp('############################')
 
