@@ -224,7 +224,7 @@ sDat = sDat[sDat$songGroup %in% c("Replication","Extension"),]
 
 # sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,songGroup,Interpolated),CorrVal = mean(CorrVal,na.rm = T)))
 
-ggplot(sDat,aes(x=Interpolated, y=CorrVal, fill = Conditions)) + 
+ggplot(sDat,aes(x=Timepoints, y=CorrVal, fill = Conditions)) + 
   geom_bar(stat="summary",fun="mean",position="dodge")+
   stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
   facet_grid(songGroup~Mask)+
@@ -256,6 +256,23 @@ ggplot(sDat,aes(x=Interpolated, y=CorrVal, fill = Conditions)) +
   theme(axis.title.y = element_text(size = 18))
 
 
+########################### Word FLHALF ##########################
+sDat = Word_InterVoxelSimFLHalf
+unique(sDat$Conditions)
+names(sDat)
+
+
+ggplot(sDat,aes(x=Interpolated, y=CorrVal, fill = Conditions)) + 
+  geom_bar(stat="summary",fun="mean",position="dodge")+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
+  facet_grid(~Mask)+
+  theme_bw(base_family = "serif")+
+  theme(strip.text.x = element_text(size=16, face="bold"))+
+  theme(strip.text.y = element_text(size=16, face="bold"))+
+  labs(x="",y="Pearson's Correlation Coefficient", size=16)+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(legend.text = element_text(size = 16))+
+  theme(axis.title.y = element_text(size = 18))
 
 
 
