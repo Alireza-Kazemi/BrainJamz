@@ -33,7 +33,43 @@ for sID = 1:length(IDs)
             timeSeriesTemp(:,volIdx) = Masked;
         end
         timeDat.(MaskNames{maskIdx}).dat = timeSeriesTemp;
-        % interpolated timeseries with x10 samples
+
+        %PCA test
+%         tsZ = timeSeriesTemp;
+%         [coeff,PCs,latent,~,explained] = pca(tsZ);
+%                 
+%         Mdl = rica(PCs,5);
+%         ICs = transform(Mdl,PCs);
+% 
+%         Mdl = rica(tsZ,20);
+%         ICs = transform(Mdl,tsZ');
+% 
+% 
+%         for i=1:size(ICs,2)
+%             subplot(4,5,i)
+%             plot(ICs(:,i))
+%             title(strings(i))
+%         end
+%         transform(Mdl,ICs)
+%         
+%         timeInterp = interpft(timeSeriesTemp,size(timeSeriesTemp,2)*interpolateBy,2);
+% 
+%         tsZ = zscore(timeInterp,0,2);
+%         [coeff,PCs,~,~,explained] = pca(tsZ');
+%                 
+%         Mdl = rica(PCs,20);
+%         ICs = transform(Mdl,PCs);
+% 
+%         Mdl = rica(tsZ',20);
+%         ICs = transform(Mdl,tsZ');
+% 
+%         for i=1:size(ICs,2)
+%             subplot(4,5,i)
+%             plot(ICs(:,i))
+%             title(strings(i))
+%         end
+
+        % interpolated timeseries with x3 samples
         timeDat.(MaskNames{maskIdx}).datInterp = interpft(timeSeriesTemp,size(timeSeriesTemp,2)*interpolateBy,2);
     end
 

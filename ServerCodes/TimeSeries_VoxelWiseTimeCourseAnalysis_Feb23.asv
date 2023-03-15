@@ -15,33 +15,31 @@ for sID = 1:length(IDs)
     Conditions = [];
     Mask = [];
     Interpolated = [];
-    Timepoints = [];
     CorrVal = [];
     conditionNames = fields(timeSeries.(['S',IDs{sID}]).dat.(MaskNames{1}));
     for conditionIdx = 1:length(conditionNames)
         for maskIdx=1:length(MaskNames)
             ts = timeSeries.(['S',IDs{sID}]).dat.(MaskNames{maskIdx}).(conditionNames{conditionIdx});
-            [simScore, simFH, simLH] = ComputeInterVoxelSimilarities(ts);
+            simScore = ComputeInterVoxelSimilarities(ts);
             
-            Subj = cat(1,Subj,repmat(string(['S',IDs{sID}]),3,1));
-            Conditions = cat(1,Conditions,repmat(string(conditionNames{conditionIdx}),3,1));
-            Mask = cat(1,Mask,repmat(string(MaskNames{maskIdx}),3,1));
-            Interpolated = cat(1,Interpolated,zeros(3,1));
-            Timepoints = cat(1,Timepoints,["FULL";"FHalf";"LHalf"]);
-            CorrVal = cat(1,CorrVal,[simScore;simFH;simLH]);
+            Subj = cat(1,Subj,string(['S',IDs{sID}]));
+            Conditions = cat(1,Conditions,string(conditionNames{conditionIdx}));
+            Mask = cat(1,Mask,string(MaskNames{maskIdx}));
+            Interpolated = cat(1,Interpolated,0);
+            CorrVal = cat(1,CorrVal,simScore);
 
 
-%             tsInterp = timeSeries.(['S',IDs{sID}]).datInterp.(MaskNames{maskIdx}).(conditionNames{conditionIdx});
-%             simScoreInterp = ComputeInterVoxelSimilarities(tsInterp);
-%             
-%             Subj = cat(1,Subj,string(['S',IDs{sID}]));
-%             Conditions = cat(1,Conditions,string(conditionNames{conditionIdx}));
-%             Mask = cat(1,Mask,string(MaskNames{maskIdx}));
-%             Interpolated = cat(1,Interpolated,1);
-%             CorrVal = cat(1,CorrVal,simScoreInterp);
+            tsInterp = timeSeries.(['S',IDs{sID}]).datInterp.(MaskNames{maskIdx}).(conditionNames{conditionIdx});
+            simScoreInterp = ComputeInterVoxelSimilarities(tsInterp);
+            
+            Subj = cat(1,Subj,string(['S',IDs{sID}]));
+            Conditions = cat(1,Conditions,string(conditionNames{conditionIdx}));
+            Mask = cat(1,Mask,string(MaskNames{maskIdx}));
+            Interpolated = cat(1,Interpolated,1);
+            CorrVal = cat(1,CorrVal,simScoreInterp);
         end
     end
-    datTable = cat(1,datTable,table(Subj,Conditions,Mask,Interpolated,Timepoints,CorrVal));
+    datTable = cat(1,datTable,table(Subj,Conditions,Mask,Interpolated,CorrVal));
 end
 
 % Save Output in CSV format
