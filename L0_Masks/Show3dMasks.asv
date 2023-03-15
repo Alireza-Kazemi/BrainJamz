@@ -15,7 +15,7 @@ Inds = find(ROI);
 x = x(Inds);
 y = y(Inds);
 z = z(Inds);
-scatter3(x,y,z,Par,'MarkerEdgeAlpha',transparency,'MarkerFaceAlpha',transparency)
+scatter3(x,y,z,Par,'MarkerEdgeAlpha',transparency,'MarkerAlpha',transparency)
 axis equal
 end
 

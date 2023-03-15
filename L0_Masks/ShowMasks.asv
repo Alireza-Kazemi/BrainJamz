@@ -1,0 +1,31 @@
+%% CreateMasks
+clear;
+clc;
+close all;
+
+load AtlasRegions.mat
+directoryname = uigetdir('D:\Projects\BrainJamz\DataFiles\L2_Masks');
+
+
+%% Show the Mask
+
+
+Brain = niftiread(string(directoryname)+"\"+"infant-2yr-aal.nii.gz");
+BW = bwmorph3(sign(Brain),'majority');
+BW = bwmorph3(BW,'fill');
+BW = bwmorph3(BW,'remove');
+BWxy = imerode(BW,ones(2,2,1));
+BWxz = imerode(BW,ones(2,1,2));
+BWyz = imerode(BW,ones(1,2,2));
+Show3dMasks(BWxy+BWxz,'k.');
+
+hold on
+
+Show3dMasks(Masks.(names{maskIdx}));
+
+legend(cat(1,"brain",names));
+
+
+for maskIdx = 1:length(names)
+    niftiwrite(Masks.(names{maskIdx}),string(directoryname)+"\"+string(names{maskIdx}+".nii"), AtlasInfo);
+end
