@@ -1256,10 +1256,56 @@ data_Corr = reshape2::dcast(data_Corr,Subj ~ Conditions, value.var="CorrVal")
 
 data_Corr$Subj = as.numeric(sub("S","",data_Corr$Subj, ignore.case = T))
 
-datWord      = read.csv(paste(RD,"Behavioral_MacWord.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
-names(datWord) = c("Subj","MacWord")
+datVocab      = read.csv(paste(RD,"Behavioral_MacWord.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
+names(datVocab) = c("Subj","MacVocab")
 
-corrMatDat = merge(datWord,data_Corr,by = "Subj")
+corrMatDat = merge(datVocab,data_Corr,by = "Subj")
 
 corrMatDat = corrMatDat[,-1]
 pairs.panels(corrMatDat, scale=FALSE,cex.cor=2,stars=TRUE,cex.labels=2)
+
+
+####################################### Correlations with Behavior Data save-----------
+sDat = SongPME
+unique(sDat$Conditions)
+# sDat = sDat[(sDat$Conditions %in% c("target_baseline","reverse_baseline","novel_baseline")),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Mask,Conditions),CorrVal = mean(CorrVal,na.rm = T)))
+sDat$C1 = unique("S")
+sDat$CorrVal = FisherZ(sDat$CorrVal)
+data_Corr = sDat
+data_Corr = reshape2::dcast(data_Corr,Subj ~ C1+Mask+Conditions, value.var="CorrVal")
+data_Corr$Subj = as.numeric(sub("S","",data_Corr$Subj, ignore.case = T))
+datSong = data_Corr
+
+
+
+sDat = WordPME
+unique(sDat$Conditions)
+# sDat = sDat[sDat$Conditions %in% c("target_baseline","known_baseline","unknown_baseline"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Mask,Conditions),CorrVal = mean(CorrVal,na.rm = T)))
+sDat$C1 = unique("W")
+sDat$CorrVal = FisherZ(sDat$CorrVal)
+data_Corr = sDat
+data_Corr = reshape2::dcast(data_Corr,Subj ~ C1+Mask+Conditions, value.var="CorrVal")
+data_Corr$Subj = as.numeric(sub("S","",data_Corr$Subj, ignore.case = T))
+datWord = data_Corr
+
+datTime      = read.csv(paste(RD,"Behavioral_Time.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
+datSpace      = read.csv(paste(RD,"Behavioral_Space.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
+trialB = "Merge234"#"trial2"#
+datTime = datTime[,c("subjID","Age","Age_split",trialB)]
+names(datTime) = c("Subj","age","ageSplit","Time")
+datSpace = datSpace[,c("subjID",trialB)]
+names(datSpace) = c("Subj","Space")
+datVocab      = read.csv(paste(RD,"Behavioral_MacWord.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
+names(datVocab) = c("Subj","MacWord")
+datOther      = read.csv(paste(RD,"Behavioral_Other.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
+names(datOther) = c("Subj","Average","AfterDelay","Initial_Learning")
+
+dat = merge(datTime,datSpace, by = "Subj", all = T)
+dat = merge(dat,datVocab, by = "Subj", all = T)
+dat = merge(dat,datOther, by = "Subj", all = T)
+dat = merge(dat,datSong, by = "Subj", all = T)
+dat = merge(dat,datWord, by = "Subj", all = T)
+
+write.csv(dat, file = "DataforJamovi.csv", row.names = F)

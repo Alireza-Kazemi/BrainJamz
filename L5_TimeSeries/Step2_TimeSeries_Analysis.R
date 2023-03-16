@@ -725,7 +725,7 @@ sDat = sDat[sDat$Interpolated==0,]
 unique(sDat$Conditions)
 names(sDat)
 sDat = sDat[sDat$Mask=="HPC",]
-SelectCond = "novel" ; # "target", "reverse" , "novel" , "baseline"
+SelectCond = "target" ; # "target", "reverse" , "novel" , "baseline"
 sDat = sDat[sDat$Conditions %in% SelectCond,] 
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,timePoints),CorrVal = mean(CorrVal,na.rm = T)))
 
@@ -750,7 +750,11 @@ corrMatDat = corrMatDat[complete.cases(corrMatDat),]
 corrMatDat = corrMatDat[,-1]
 # pairs.panels(corrMatDat, scale=FALSE,cex.cor=2,stars=TRUE,cex.labels=2)
 Cors = cor(corrMatDat,method = "pearson")
+R = corr.p(Cors,n=43)
+
+X = R$p[1,]
 X = Cors[2,]
+
 X = X[c(-1,-2)]
 mean(X)
 plot(X,type = "l",ylab = SelectCond, xlab = "Time")
