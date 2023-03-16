@@ -7,13 +7,13 @@ close all;
 % Masks.PFC = [3:16,23:26]; 
 % Masks.VC = [43,44,45,46,47:54];
 % Masks.Parietal = 59:66;
-% Masks.MTL = [37,38,39,40,41,42];
-Masks.Auditory = 81:82;
-% Masks.Auditory_L = 81;
-% Masks.Auditory_R = 82;
+Masks.MTL = [37,38,39,40,41,42];
+% Masks.Auditory = 79:82;
+Masks.Auditory_L = [79,81];
+Masks.Auditory_R = [80,82];
 % Masks.HPC = [37,38];
-% Masks.HPC_L = [37,38];
-% Masks.HPC_R = [37,38];
+Masks.HPC_L = 37;
+Masks.HPC_R = 38;
 % Masks.PHC = [39,40];
 
 load AtlasRegions.mat
@@ -33,8 +33,14 @@ for roiIdx = 1:length(names)
     temp(temp<=0)=0;
     Masks.(names{roiIdx}) = single(temp);
 end
-% Masks.aMTL = Masks.MTL;
-% Masks.aMTL(:,1:115,:) = false;
+Masks.aMTL = Masks.MTL;
+Masks.aMTL(:,1:115,:) = false;
+Masks.aMTL_L = Masks.aMTL;
+Masks.aMTL_L(92:end,:,:) = false;
+Masks.aMTL_R = Masks.aMTL;
+Masks.aMTL_R(1:92,:,:) = false;
+Masks = rmfield(Masks,["MTL","aMTL"]);
+
 names = fields(Masks);
 
 Brain = niftiread(string(directoryname)+"\"+"infant-2yr-aal.nii.gz");
@@ -44,8 +50,8 @@ BW = bwmorph3(BW,'remove');
 BWxy = imerode(BW,ones(2,2,1));
 BWxz = imerode(BW,ones(2,1,2));
 BWyz = imerode(BW,ones(1,2,2));
-Show3dMasks(BWxy+BWxz,'k.');
-Show3dMasks(Brain,'k.');
+Show3dMasks(BWxy+BWxz+BWyz,'k+',.1);
+% Show3dMasks(Brain,'ko',0.1);
 
 hold on
 for maskIdx = 1:length(names)
