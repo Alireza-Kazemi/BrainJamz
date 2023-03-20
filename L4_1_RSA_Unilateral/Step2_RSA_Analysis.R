@@ -840,12 +840,13 @@ pairs.panels(corrMatDat, scale=FALSE,cex.cor=2,stars=TRUE,cex.labels=2)
 ####################################### Correlations with Behavior Data save-----------
 sDat = SongPME
 unique(sDat$Conditions)
-# sDat = sDat[(sDat$Conditions %in% c("target_baseline","reverse_baseline","novel_baseline")),]
-sDat = as.data.frame(summarise(group_by(sDat,Subj,Mask,Conditions),CorrVal = mean(CorrVal,na.rm = T)))
+head(sDat)
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Mask,Conditions,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
 sDat$C1 = unique("S")
 sDat$CorrVal = FisherZ(sDat$CorrVal)
+head(sDat)
 data_Corr = sDat
-data_Corr = reshape2::dcast(data_Corr,Subj ~ C1+Mask+Conditions, value.var="CorrVal")
+data_Corr = reshape2::dcast(data_Corr,Subj ~ C1+Mask+Hemisphere+Conditions, value.var="CorrVal")
 data_Corr$Subj = as.numeric(sub("S","",data_Corr$Subj, ignore.case = T))
 datSong = data_Corr
 
@@ -853,12 +854,13 @@ datSong = data_Corr
 
 sDat = WordPME
 unique(sDat$Conditions)
-# sDat = sDat[sDat$Conditions %in% c("target_baseline","known_baseline","unknown_baseline"),]
-sDat = as.data.frame(summarise(group_by(sDat,Subj,Mask,Conditions),CorrVal = mean(CorrVal,na.rm = T)))
+head(sDat)
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Mask,Conditions,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
 sDat$C1 = unique("W")
 sDat$CorrVal = FisherZ(sDat$CorrVal)
+head(sDat)
 data_Corr = sDat
-data_Corr = reshape2::dcast(data_Corr,Subj ~ C1+Mask+Conditions, value.var="CorrVal")
+data_Corr = reshape2::dcast(data_Corr,Subj ~ C1+Mask+Hemisphere+Conditions, value.var="CorrVal")
 data_Corr$Subj = as.numeric(sub("S","",data_Corr$Subj, ignore.case = T))
 datWord = data_Corr
 
@@ -880,4 +882,4 @@ dat = merge(dat,datOther, by = "Subj", all = T)
 dat = merge(dat,datSong, by = "Subj", all = T)
 dat = merge(dat,datWord, by = "Subj", all = T)
 
-write.csv(dat, file = "DataforJamovi.csv", row.names = F)
+write.csv(dat, file = paste(WD,"DataforJamovi.csv",sep = ""), row.names = F)
