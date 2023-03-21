@@ -39,6 +39,21 @@ p_load(reshape2,
 RD = "D:\\Projects\\BrainJamz\\DataFiles\\L4_1_RSA_Unilateral\\"
 WD = "D:\\Projects\\BrainJamz\\DataFiles\\L4_1_RSA_Unilateral\\"
 
+########################### Functions -----
+RemoveOutliers <- function(dataFrame,factorNames,varName,Criteria=3){
+  datTemp = dataFrame[,c(factorNames,varName)]
+  Conds = NULL
+  for (condName in factorNames){
+    Conds = paste(Conds,datTemp[,condName],sep = "_")    
+  }
+  
+  for (condName in unique(Conds)){
+    X = datTemp[Conds==condName,varName]
+    X[abs((X-mean(X,na.rm = TRUE))/sd(X,na.rm = TRUE))>Criteria]=NA
+    dataFrame[Conds==condName,varName] = X
+  }
+  return(dataFrame)
+}
 
 ########################### LoadData #################
 data_Corr      = read.csv(paste(RD,"Song_BlockBased_ForR.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
@@ -163,13 +178,15 @@ ggplot(sDat,aes(x=Conditions, y=CorrVal, fill = Conditions)) +
   theme(legend.text = element_text(size = 16))+
   theme(axis.title.y = element_text(size = 18))
 
+
+
 ########################### Song BlockBased All Masks ##########################
 sDat = SongBB
 unique(sDat$Conditions)
 sDat = sDat[sDat$Conditions %in% c("target_reverse","target_novel","reverse_novel"),]
 sDat = sDat[sDat$songGroup %in% c("Replication","Extension"),]
 head(sDat)
-sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,songGroup),CorrVal = mean(CorrVal,na.rm = T)))
 
 ggplot(sDat,aes(x=Conditions, y=CorrVal, fill = Conditions)) + 
   geom_bar(stat="summary",fun="mean",position="dodge")+
@@ -292,8 +309,69 @@ cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
 cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
 t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 
+########################### Word BlockBased SRCD ##########################
+sDat = WordBB
+unique(sDat$Conditions)
+sDat = sDat[sDat$Conditions %in% c("target_known","target_unknown","known_unknown"),]
+# sDat = sDat[sDat$Hemisphere=="Left",]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+head(sDat)
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+
+ggplot(sDat,aes(x = Conditions , y = CorrVal, fill = Conditions)) +
+  # geom_bar(stat="summary",fun="mean",position="dodge")+
+  geom_jitter(position = position_jitterdodge(jitter.width = NULL,
+                                              jitter.height = 0,
+                                              dodge.width = .75),shape = 21,fill="grey",aes(colour = Conditions))+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
+  facet_wrap(~Mask)+
+  theme_bw(base_family = "serif")+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(text = element_text(size=14))+
+  scale_fill_brewer(palette="Dark2")+
+  scale_color_brewer(palette="Dark2")
+graph2ppt(file=paste(WD,"Figure1.pptx",sep = ""),width = 12, height = 5.5)
 
 
+sDat$ZscoredValue = FisherZ(sDat$CorrVal)
+Mask = "HPC"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+Mask = "aMTL"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+Mask = "Auditory"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 
 
 ############################################################################## BlockEvent ----
@@ -348,6 +426,19 @@ unique(sDat$Conditions)
 sDat = sDat[sDat$Conditions %in% c("target","known","unknown","baseline"),]
 head(sDat)
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+
+ggplot(sDat,aes(x=Hemisphere, y=CorrVal, fill = Conditions)) + 
+  geom_bar(stat="summary",fun="mean",position="dodge")+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
+  facet_grid(~Mask)+
+  theme_bw(base_family = "serif")+
+  theme(strip.text.x = element_text(size=16, face="bold"))+
+  theme(strip.text.y = element_text(size=16, face="bold"))+
+  labs(x="",y="Pearson's Correlation Coefficient", size=16)+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(legend.text = element_text(size = 16))+
+  theme(axis.title.y = element_text(size = 18))
+
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
 
 
@@ -499,6 +590,73 @@ t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 
 cond1 = sDat$songGroup==Group & sDat$Mask == Mask & sDat$Conditions == "reverse_novel"
 cond2 = sDat$songGroup==Group & sDat$Mask == Mask & sDat$Conditions == "target_reverse"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+
+########################### Word BlockEvent SRCD ##########################
+sDat = WordBE
+unique(sDat$Conditions)
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+head(sDat)
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+# sDat = sDat[sDat$Hemisphere=="Left",]
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+
+ggplot(sDat,aes(x = Conditions , y = CorrVal, fill = Conditions)) +
+  # geom_bar(stat="summary",fun="mean",position="dodge")+
+  geom_jitter(position = position_jitterdodge(jitter.width = NULL,
+                                              jitter.height = 0,
+                                              dodge.width = .75),shape = 21,fill="grey",aes(colour = Conditions))+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
+  facet_wrap(~Mask)+
+  theme_bw(base_family = "serif")+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(text = element_text(size=14))+
+  scale_fill_brewer(palette="Dark2")+
+  scale_color_brewer(palette="Dark2")
+graph2ppt(file=paste(WD,"Figure2.pptx",sep = ""),width = 12, height = 5.5)
+
+sDat$ZscoredValue = FisherZ(sDat$CorrVal)
+
+
+Mask = "HPC"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+Mask = "aMTL"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+Mask = "Auditory"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
 t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 
 
@@ -721,6 +879,164 @@ ggplot(sDat,aes(x=PermCond, y=CorrVal, fill = Conditions)) +
 
 
 
+
+
+########################### Word PermMicroEvents SRCD ##########################
+sDat = WordPME
+unique(sDat$Conditions)
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat = sDat[sDat$Perm1 == sDat$Perm2,]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+head(sDat)
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+
+ggplot(sDat,aes(x = Conditions , y = CorrVal, fill = Conditions)) +
+  # geom_bar(stat="summary",fun="mean",position="dodge")+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge", linewidth = 1,
+               aes(colour = Conditions))+
+  geom_jitter(position = position_jitterdodge(jitter.width = NULL,
+                                              jitter.height = 0,
+                                              dodge.width = .75),shape = 21,fill="grey",aes(colour = Conditions))+
+  
+  facet_wrap(~Mask)+
+  theme_bw(base_family = "serif")+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(text = element_text(size=14))+
+  scale_fill_brewer(palette="Dark2")+
+  scale_color_brewer(palette="Dark2")
+graph2ppt(file=paste(WD,"Figure4.pptx",sep = ""),width = 12, height = 5.5)
+
+sDat$ZscoredValue = FisherZ(sDat$CorrVal)
+Mask = "HPC"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+Mask = "aMTL"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+Mask = "Auditory"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+
+
+
+
+########################### Word SRCD across Methods ##########################
+sDat = WordBB
+sDat = sDat[sDat$Conditions %in% c("target_known","target_unknown","known_unknown"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordBB = sDat
+datWordBB$Method = unique("Block-Based")
+
+sDat = WordBE
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordBE = sDat
+datWordBE$Method = unique("Block-Event")
+
+sDat = WordPME
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat = sDat[sDat$Perm1 == sDat$Perm2,]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordPME = sDat
+datWordPME$Method = unique("Permuted Micro-Event")
+
+sDat = rbind(datWordBB,datWordBE,datWordPME)
+sDat = sDat[sDat$Mask!="Auditory",]
+sDat$Method = factor(sDat$Method, levels = c("Block-Based","Block-Event","Permuted Micro-Event"))
+
+
+ggplot(sDat,aes(x = Conditions , y = CorrVal, fill = Conditions)) +
+  geom_bar(stat="summary",fun="mean",position="dodge")+
+  # geom_jitter(position = position_jitterdodge(jitter.width = NULL,
+  #                                             jitter.height = 0,
+  #                                             dodge.width = .75),shape = 21,fill="grey",aes(colour = Conditions))+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
+  facet_grid(Mask~Method)+
+  theme_bw(base_family = "serif")+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(text = element_text(size=14))+
+  scale_fill_brewer(palette="Dark2")+
+  scale_color_brewer(palette="Dark2")
+graph2ppt(file=paste(WD,"Figure5.pptx",sep = ""),width = 12, height = 5.5)
+
+
+sDat$ZscoredValue = FisherZ(sDat$CorrVal)
+Mask = "HPC"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+Mask = "aMTL"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+Mask = "Auditory"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known"
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown"
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 ####################################### Correlations with Behavior Song Permutation -----------
 sDat = SongPME
 unique(sDat$Conditions)
@@ -863,6 +1179,60 @@ data_Corr = sDat
 data_Corr = reshape2::dcast(data_Corr,Subj ~ C1+Mask+Hemisphere+Conditions, value.var="CorrVal")
 data_Corr$Subj = as.numeric(sub("S","",data_Corr$Subj, ignore.case = T))
 datWord = data_Corr
+
+datTime      = read.csv(paste(RD,"Behavioral_Time.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
+datSpace      = read.csv(paste(RD,"Behavioral_Space.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
+trialB = "Merge234"#"trial2"#
+datTime = datTime[,c("subjID","Age","Age_split",trialB)]
+names(datTime) = c("Subj","age","ageSplit","Time")
+datSpace = datSpace[,c("subjID",trialB)]
+names(datSpace) = c("Subj","Space")
+datVocab      = read.csv(paste(RD,"Behavioral_MacWord.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
+names(datVocab) = c("Subj","MacWord")
+datOther      = read.csv(paste(RD,"Behavioral_Other.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
+names(datOther) = c("Subj","Average","AfterDelay","Initial_Learning")
+
+dat = merge(datTime,datSpace, by = "Subj", all = T)
+dat = merge(dat,datVocab, by = "Subj", all = T)
+dat = merge(dat,datOther, by = "Subj", all = T)
+dat = merge(dat,datSong, by = "Subj", all = T)
+dat = merge(dat,datWord, by = "Subj", all = T)
+
+write.csv(dat, file = paste(WD,"DataforJamovi.csv",sep = ""), row.names = F)
+########################### Word SRCD Behavior across Methods ##########################
+sDat = WordBB
+sDat = sDat[sDat$Conditions %in% c("target_known","target_unknown","known_unknown"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordBB = sDat
+datWordBB$Method = unique("BB")
+
+sDat = WordBE
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordBE = sDat
+datWordBE$Method = unique("BE")
+
+sDat = WordPME
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat = sDat[sDat$Perm1 == sDat$Perm2,]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordPME = sDat
+datWordPME$Method = unique("PME")
+
+sDat = rbind(datWordBB,datWordBE,datWordPME)
+sDat = sDat[sDat$Mask!="Auditory",]
+sDat$Method = factor(sDat$Method, levels = c("BB","BE","PME"))
+head(sDat)
+data_Corr = reshape2::dcast(sDat,Subj ~ Mask+Hemisphere+Conditions, value.var="CorrVal")
+data_Corr$Subj = as.numeric(sub("S","",data_Corr$Subj, ignore.case = T))
+
+
 
 datTime      = read.csv(paste(RD,"Behavioral_Time.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
 datSpace      = read.csv(paste(RD,"Behavioral_Space.csv",sep = ""),sep = ",",header=TRUE,strip.white=TRUE)
