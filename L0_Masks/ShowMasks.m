@@ -69,10 +69,10 @@ Masks.aMTL_R = Masks.aMTL;
 Masks.aMTL_R(1:92,:,:) = false;
 Masks = rmfield(Masks,["MTL","aMTL"]);
 
-[fileName1, pathName] = uigetfile(string(directoryname)+"\*.*");
-Masks.Auditory_L = niftiread([pathName,fileName1]);
-[fileName2, pathName] = uigetfile(string(directoryname)+"\*.*");
-Masks.Auditory_R = niftiread([pathName,fileName2]);
+% [fileName1, pathName] = uigetfile(string(directoryname)+"\*.*");
+% Masks.Auditory_L = niftiread([pathName,fileName1]);
+% [fileName2, pathName] = uigetfile(string(directoryname)+"\*.*");
+% Masks.Auditory_R = niftiread([pathName,fileName2]);
 
 names = fields(Masks);
 
@@ -90,7 +90,7 @@ hold on
 for maskIdx = 1:length(names)
     Show3dMasks(Masks.(names{maskIdx}));
 end
-legend(cat(1,"brain",names));
+legend(cat(1,"brain",names),'interpreter','none');
 axis off
 set(gcf,'Color',[1,1,1])
 view(47,13)
