@@ -1229,8 +1229,40 @@ sDat = rbind(datWordBB,datWordBE,datWordPME)
 sDat = sDat[sDat$Mask!="Auditory",]
 sDat$Method = factor(sDat$Method, levels = c("BB","BE","PME"))
 head(sDat)
-data_Corr = reshape2::dcast(sDat,Subj ~ Mask+Hemisphere+Conditions, value.var="CorrVal")
-data_Corr$Subj = as.numeric(sub("S","",data_Corr$Subj, ignore.case = T))
+dataWordBiLat = reshape2::dcast(sDat,Subj ~ Mask+Conditions+Method, value.var="CorrVal")
+dataWordBiLat$Subj = as.numeric(sub("S","",dataWordBiLat$Subj, ignore.case = T))
+
+
+sDat = WordBB
+sDat = sDat[sDat$Conditions %in% c("target_known","target_unknown","known_unknown"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask","Hemisphere"), varName = "CorrVal", Criteria = 3)
+datWordBB = sDat
+datWordBB$Method = unique("BB")
+
+sDat = WordBE
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask","Hemisphere"), varName = "CorrVal", Criteria = 3)
+datWordBE = sDat
+datWordBE$Method = unique("BE")
+
+sDat = WordPME
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat = sDat[sDat$Perm1 == sDat$Perm2,]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask","Hemisphere"), varName = "CorrVal", Criteria = 3)
+datWordPME = sDat
+datWordPME$Method = unique("PME")
+
+sDat = rbind(datWordBB,datWordBE,datWordPME)
+sDat = sDat[sDat$Mask!="Auditory",]
+sDat$Method = factor(sDat$Method, levels = c("BB","BE","PME"))
+head(sDat)
+dataWordUniiLat = reshape2::dcast(sDat,Subj ~ Mask+Conditions+Method+Hemisphere, value.var="CorrVal")
+dataWordUniiLat$Subj = as.numeric(sub("S","",dataWordUniiLat$Subj, ignore.case = T))
+
 
 
 
@@ -1249,7 +1281,7 @@ names(datOther) = c("Subj","Average","AfterDelay","Initial_Learning")
 dat = merge(datTime,datSpace, by = "Subj", all = T)
 dat = merge(dat,datVocab, by = "Subj", all = T)
 dat = merge(dat,datOther, by = "Subj", all = T)
-dat = merge(dat,datSong, by = "Subj", all = T)
-dat = merge(dat,datWord, by = "Subj", all = T)
+dat = merge(dat,dataWordBiLat, by = "Subj", all.y = T)
+dat = merge(dat,dataWordUniiLat, by = "Subj", all.y = T)
 
-write.csv(dat, file = paste(WD,"DataforJamovi.csv",sep = ""), row.names = F)
+write.csv(dat, file = paste(WD,"SRCDForJamovi.csv",sep = ""), row.names = F)
