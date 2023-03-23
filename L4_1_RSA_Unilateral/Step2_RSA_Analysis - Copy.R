@@ -56,7 +56,7 @@ RemoveOutliers <- function(dataFrame,factorNames,varName,Criteria=3){
 }
 
 ########################### SRCD Correlation Graphs #################
-dat      = read.csv(paste(RD,"DataforJamovi.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+dat      = read.csv(paste(RD,"SRCDForJamovi.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
 
 ggplot()+
   # geom_line(data=d2,aes(x = age, y = M),lwd=1, color= "blue",alpha=0.5)+
