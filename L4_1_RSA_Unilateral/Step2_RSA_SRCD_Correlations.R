@@ -58,19 +58,50 @@ RemoveOutliers <- function(dataFrame,factorNames,varName,Criteria=3){
 ########################### SRCD Correlation Graphs #################
 dat      = read.csv(paste(RD,"SRCDForJamovi.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
 
-ggplot()+
-  # geom_line(data=d2,aes(x = age, y = M),lwd=1, color= "blue",alpha=0.5)+
-  # geom_point(data=d2,aes(x = age, y = M),size=3, color= "blue",alpha=0.5)+
-  geom_line(data=dat,aes(age, fit),lwd=1, linetype="dotted", color= "blue")+
-  geom_point(data=d1,aes(age, fit),size=2, color= "blue")+
-  geom_errorbar(data=d1,aes(x=age, ymin=lower, ymax=upper), color= "blue",width = 0.05,size = .8)+
+head(dat)
+
+corr.test(dat$MacWord,dat$HPC_target_known_BB_Left)
+correlation::cor_test(dat, x = "MacWord",y = "HPC_target_known_BB")
+
+ggplot(data=dat,aes(x = MacWord, y = HPC_target_known_BB_Left))+
+  geom_point(size=2)+
+  stat_smooth(method = "lm",
+              formula = y ~ x,
+              geom = "smooth")+
   theme_bw(base_family = "serif")+
-  labs(x="Age",y="Agree", size=16)+
+  labs(x="Productive Vocabulary Score",y="Target_Known Similarity", size=16)+
   theme(axis.title.y = element_text(size = 16))+
   theme(axis.title.x = element_text(size = 16))+
   theme(axis.text.x = element_text(size = 16))+
   theme(axis.text.y = element_text(size = 16))+
-  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
-  scale_x_continuous(breaks=c(5,7,9))+
-  ylim(0.5,.95)+
-  scale_fill_grey()
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())
+
+
+
+ggplot(data=dat,aes(x = Initial_Learning, y = HPC_target_known_BE_Left))+
+  geom_point(size=2)+
+  stat_smooth(method = "lm",
+              formula = y ~ x,
+              geom = "smooth")+
+  theme_bw(base_family = "serif")+
+  labs(x="Memory for Target Words",y="Target_Known Similarity", size=16)+
+  theme(axis.title.y = element_text(size = 16))+
+  theme(axis.title.x = element_text(size = 16))+
+  theme(axis.text.x = element_text(size = 16))+
+  theme(axis.text.y = element_text(size = 16))+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())
+
+
+ggplot(data=dat,aes(x = MacWord, y = HPC_target_unknown_PME))+
+  geom_point(size=2)+
+  stat_smooth(method = "lm",
+              formula = y ~ x,
+              geom = "smooth")+
+  theme_bw(base_family = "serif")+
+  labs(x="Productive Vocabulary Score",y="Target_UnKnown Similarity", size=16)+
+  theme(axis.title.y = element_text(size = 16))+
+  theme(axis.title.x = element_text(size = 16))+
+  theme(axis.text.x = element_text(size = 16))+
+  theme(axis.text.y = element_text(size = 16))+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())
+
