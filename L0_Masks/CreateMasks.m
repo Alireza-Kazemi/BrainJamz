@@ -7,7 +7,8 @@ close all;
 % Masks.PFC = [3:16,23:26]; 
 % Masks.VC = [43,44,45,46,47:54];
 % Masks.Parietal = 59:66;
-Masks.MTL = [37,38,39,40,41,42];
+% Masks.MTL = [37,38,39,40,41,42];
+Masks.MTL = [39,40,41,42]; % Without HPC
 % Masks.Auditory = 79:82;
 Masks.Auditory_L = [79,81];
 Masks.Auditory_R = [80,82];

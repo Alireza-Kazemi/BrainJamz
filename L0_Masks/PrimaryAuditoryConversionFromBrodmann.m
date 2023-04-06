@@ -1,12 +1,12 @@
 % Go to Folder that has brodmann 22, 41 and 42 areas
 % can be downloaded from http://www.talairach.org/nii/gzip/
 % good resource: https://nipy.org/nibabel/coordinate_systems.html
+directoryname = uigetdir('D:\Projects\BrainJamz\DataFiles\L2_Masks');
+B41 = niftiread(string(directoryname)+"\"+"Cell_Brodmann_area_41.nii");
+B42 = niftiread(string(directoryname)+"\"+"Cell_Brodmann_area_42.nii");
+B22 = niftiread(string(directoryname)+"\"+"Cell_Brodmann_area_22.nii");
 
-B41 = niftiread("Cell_Brodmann_area_41.nii");
-B42 = niftiread("Cell_Brodmann_area_42.nii");
-B22 = niftiread("Cell_Brodmann_area_22.nii");
-
-B41Info = niftiinfo("Cell_Brodmann_area_41.nii");
+B41Info = niftiinfo(string(directoryname)+"\"+"Cell_Brodmann_area_41.nii");
 
 auditory = B41+B42+B22;
 
@@ -40,9 +40,9 @@ Mask = logical(Mask);
 Mask = inds & Mask;
 
 AuditoryLeft = Mask;
-AuditoryLeft(1:91,:,:)=false;
+AuditoryLeft(92:end,:,:)=false;
 AuditoryRight = Mask;
-AuditoryRight(92:end,:,:)=false;
+AuditoryRight(1:91,:,:)=false;
 AuditoryRight = single(AuditoryRight);
 AuditoryLeft = single(AuditoryLeft);
 %% Display the Mask
