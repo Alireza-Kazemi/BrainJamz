@@ -41,7 +41,8 @@ close all;
 
 
 
-Masks.MTL = [37,38,39,40,41,42];
+% Masks.MTL = [37,38,39,40,41,42];
+Masks.MTL = [39,40,41,42]; % Without HPC
 Masks.HPC_L = 37;
 Masks.HPC_R = 38;
 
