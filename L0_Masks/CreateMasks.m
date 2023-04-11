@@ -8,7 +8,7 @@ close all;
 % Masks.VC = [43,44,45,46,47:54];
 % Masks.Parietal = 59:66;
 % Masks.MTL = [37,38,39,40,41,42];
-Masks.MTL = [39,40,41,42]; % Without HPC
+Masks.MTL = [39,40]; % Without HPC and Amygdala
 % Masks.Auditory = 79:82;
 Masks.Auditory_L = [79,81];
 Masks.Auditory_R = [80,82];
@@ -35,7 +35,7 @@ for roiIdx = 1:length(names)
     Masks.(names{roiIdx}) = single(temp);
 end
 Masks.aMTL = Masks.MTL;
-Masks.aMTL(:,1:115,:) = false;
+Masks.aMTL(:,1:105,:) = false;
 Masks.aMTL_L = Masks.aMTL;
 Masks.aMTL_L(92:end,:,:) = false;
 Masks.aMTL_R = Masks.aMTL;
