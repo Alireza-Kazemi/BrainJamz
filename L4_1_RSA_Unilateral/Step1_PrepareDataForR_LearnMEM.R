@@ -43,9 +43,9 @@ RDmPFC = "D:\\Projects\\BrainJamz\\DataFiles\\L4_RSA\\"
 ########################### Prepare Song BlockBased Data and Save #################
 fileName = "RSA_BlockBased_Song.csv"
 data_Corr      = read.csv(paste(RD,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
-datmPFC = read.csv(paste(RDmPFC,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
-datmPFC = datmPFC[datmPFC$Mask=="aMPFCSphere",]
-data_Corr = rbind(data_Corr,datmPFC)
+# datmPFC = read.csv(paste(RDmPFC,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+# datmPFC = datmPFC[datmPFC$Mask=="aMPFCSphere",]
+# data_Corr = rbind(data_Corr,datmPFC)
 
 songTrack      = read.csv(paste(RD,"TrackTable.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
 songTrack$Subj = songTrack$ID
@@ -70,10 +70,10 @@ write.csv(data_Corr,"Song_BlockBased_ForR.csv", row.names = F)
 ########################### Prepare Word BlockBased Data and Save #################
 fileName = "RSA_BlockBased_Word.csv"
 data_Corr      = read.csv(paste(RD,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
-datmPFC = read.csv(paste(RDmPFC,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
-datmPFC = datmPFC[datmPFC$Mask=="aMPFCSphere",]
-data_Corr = rbind(data_Corr,datmPFC)
-unique(data_Corr$Conditions)
+# datmPFC = read.csv(paste(RDmPFC,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+# datmPFC = datmPFC[datmPFC$Mask=="aMPFCSphere",]
+# data_Corr = rbind(data_Corr,datmPFC)
+# unique(data_Corr$Conditions)
 
 data_Corr$Conditions = factor(data_Corr$Conditions, 
                               levels =  c("known_target", "unknown_target", "known_unknown",
@@ -92,9 +92,9 @@ write.csv(data_Corr,"Word_BlockBased_ForR.csv", row.names = F)
 ########################### Prepare Song BlockEvent Data and Save #################
 fileName = "RSA_BlockEvent_Song.csv"
 data_Corr      = read.csv(paste(RD,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
-datmPFC = read.csv(paste(RDmPFC,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
-datmPFC = datmPFC[datmPFC$Mask=="aMPFCSphere",]
-data_Corr = rbind(data_Corr,datmPFC)
+# datmPFC = read.csv(paste(RDmPFC,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+# datmPFC = datmPFC[datmPFC$Mask=="aMPFCSphere",]
+# data_Corr = rbind(data_Corr,datmPFC)
 
 songTrack      = read.csv(paste(RD,"TrackTable.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
 songTrack$Subj = songTrack$ID
@@ -131,9 +131,9 @@ write.csv(data_Corr,"Song_BlockEvent_ForR.csv", row.names = F)
 ########################### Prepare Word BlockEvent Data and Save #################
 fileName = "RSA_BlockEvent_Word.csv"
 data_Corr      = read.csv(paste(RD,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
-datmPFC = read.csv(paste(RDmPFC,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
-datmPFC = datmPFC[datmPFC$Mask=="aMPFCSphere",]
-data_Corr = rbind(data_Corr,datmPFC)
+# datmPFC = read.csv(paste(RDmPFC,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+# datmPFC = datmPFC[datmPFC$Mask=="aMPFCSphere",]
+# data_Corr = rbind(data_Corr,datmPFC)
 
 A = as.data.frame(strsplit(unique(data_Corr$Conditions),"_"))
 A = transpose(A)
@@ -168,9 +168,9 @@ write.csv(data_Corr,"Word_BlockEvent_ForR.csv", row.names = F)
 ########################### Prepare Song PermMicroEvents Data and Save #################
 fileName = "RSA_PermMicroEvents_Song.csv"
 data_Corr      = read.csv(paste(RD,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
-datmPFC = read.csv(paste(RDmPFC,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
-datmPFC = datmPFC[datmPFC$Mask=="aMPFCSphere",]
-data_Corr = rbind(data_Corr,datmPFC)
+# datmPFC = read.csv(paste(RDmPFC,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+# datmPFC = datmPFC[datmPFC$Mask=="aMPFCSphere",]
+# data_Corr = rbind(data_Corr,datmPFC)
 
 songTrack      = read.csv(paste(RD,"TrackTable.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
 songTrack$Subj = songTrack$ID
@@ -209,9 +209,9 @@ write.csv(data_Corr,"Song_PermMicroEvents_ForR.csv", row.names = F)
 ########################### Prepare Word PermMicroEvents Data and Save #################
 fileName = "RSA_PermMicroEvents_Word.csv"
 data_Corr      = read.csv(paste(RD,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
-datmPFC = read.csv(paste(RDmPFC,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
-datmPFC = datmPFC[datmPFC$Mask=="aMPFCSphere",]
-data_Corr = rbind(data_Corr,datmPFC)
+# datmPFC = read.csv(paste(RDmPFC,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+# datmPFC = datmPFC[datmPFC$Mask=="aMPFCSphere",]
+# data_Corr = rbind(data_Corr,datmPFC)
 
 
 A = as.data.frame(strsplit(unique(data_Corr$Conditions),"_"))
