@@ -111,4 +111,43 @@ ggplot(dat,aes(x = Contrast , y = Activation, fill = Contrast)) +
   theme(text = element_text(size=14))+
   facet_wrap(~Mask)
 graph2ppt(file=paste(WD,"Figure1.pptx",sep = ""),width = 9, height = 4)
+######################################################### Selection Rate ----
+dat = read.csv(paste(RD,"SelectionRate.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
 
+
+dat = reshape2::melt(dat, id.vars = "ID", 
+                     variable.name = "Condition", value.name = "value" )
+
+dat$Session = case_when(grepl("S1_",dat$Condition)~"S1",
+                        grepl("S2_",dat$Condition)~"S2")
+
+dat$Condition = gsub("S1_","",dat$Condition)
+dat$Condition = gsub("S2_","",dat$Condition)
+
+dat$Name = case_when(grepl("_o",dat$Condition)~"Object",
+                     grepl("_c",dat$Condition)~"Puppet")
+
+dat$Condition = gsub("_o","",dat$Condition)
+dat$Condition = gsub("_c","",dat$Condition)
+
+dat = as.data.frame(summarise(group_by(dat,ID,Condition,Session),value = mean(value,na.rm = T)))
+
+dat$Condition = factor(dat$Condition, levels = c("Tar","Non","Dis"),
+                       labels = c("Target","NonTarget","Distractor"))
+
+dat = dat[dat$Session == "S2",]
+ggplot(dat,aes(x = Condition , y = value, fill = Condition)) +
+  geom_bar(stat="summary",fun="mean",position="dodge")+
+  # geom_boxplot(outlier.colour="black",outlier.shape=8,
+  #              size=.5,fill = NA,aes(colour = condition))+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge",linewidth=1)+
+  theme_bw(base_family = "serif")+
+  # theme(strip.text.x = element_text(size=16, face="bold"))+
+  # theme(strip.text.y = element_text(size=16, face="bold"))+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  # theme(legend.text = element_text(size = 16))+
+  # theme(axis.title.y = element_text(size = 18))+
+  # theme(axis.title.x = element_text(size = 18))+
+  theme(text = element_text(size=14))+
+  facet_wrap(~Session)
+graph2ppt(file=paste(WD,"Figure2.pptx",sep = ""),width = 9, height = 6)
