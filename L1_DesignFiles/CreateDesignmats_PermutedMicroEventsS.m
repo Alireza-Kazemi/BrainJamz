@@ -60,6 +60,7 @@ for Find=1:length(Files)
         load(Files{Find});
         onsetER = cell(1,length(names));
         durER = cell(1,length(names));
+        emptyCondIdx = [];
         for condIdx = 1:length(names)
             onsetT = onsets{condIdx};
             durT   = durations{condIdx};
@@ -80,6 +81,9 @@ for Find=1:length(Files)
                 onsetERT = cat(2,onsetERT,onsetN);
             end
             durERT = ones(1,length(onsetERT));
+            if(isempty(durERT))
+                emptyCondIdx = cat(1,emptyCondIdx,condIdx);
+            end
             onsetER{condIdx} = onsetERT;
             durER{condIdx} = durERT;
             
@@ -93,6 +97,10 @@ for Find=1:length(Files)
         end
         onsets = onsetER;
         durations = durER;
+        
+        onsets(emptyCondIdx) = [];
+        durations(emptyCondIdx) = [];
+        names(emptyCondIdx) = [];
         save([Files{Find}(1:end-4),'_PermS',num2str(permIdx),'.mat'],'names','onsets','durations')
     end
 end
