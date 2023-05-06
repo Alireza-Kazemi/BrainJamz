@@ -96,6 +96,18 @@ unique(data_Corr$Conditions)
 unique(data_Corr$Mask)
 SongPME = data_Corr
 
+data_Corr      = read.csv(paste(RD,"Song_PermMicroEventsS_ForR.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+data_Corr$Conditions = factor(data_Corr$Conditions, 
+                              levels = c("target", "reverse", "novel", "baseline", 
+                                         "target_reverse", "target_novel","reverse_novel",
+                                         "target_baseline", "reverse_baseline", "novel_baseline"))
+data_Corr$Mask = factor(data_Corr$Mask, levels = c("HPC","aMTL","PAuditory","aMPFCSphere"), 
+                        labels = c("HPC","aMTL","Auditory","aMPFC"))
+data_Corr$Hemisphere[data_Corr$Mask=="aMPFC"] = "Left"
+unique(data_Corr$Conditions)
+unique(data_Corr$Mask)
+SongPMES = data_Corr
+
 #-------------- WordData
 data_Corr      = read.csv(paste(RD,"Word_BlockBased_ForR.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
 data_Corr$Conditions = factor(data_Corr$Conditions, 
@@ -133,6 +145,18 @@ data_Corr$Hemisphere[data_Corr$Mask=="aMPFC"] = "Left"
 unique(data_Corr$Conditions)
 unique(data_Corr$Mask)
 WordPME = data_Corr
+
+data_Corr      = read.csv(paste(RD,"Word_PermMicroEventsS_ForR.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+data_Corr$Conditions = factor(data_Corr$Conditions, 
+                              levels = c("target", "known", "unknown", "baseline", 
+                                         "target_known", "target_unknown", "known_unknown",
+                                         "target_baseline", "known_baseline", "unknown_baseline"))
+data_Corr$Mask = factor(data_Corr$Mask, levels = c("HPC","aMTL","PAuditory","aMPFCSphere"), 
+                        labels = c("HPC","aMTL","Auditory","aMPFC"))
+data_Corr$Hemisphere[data_Corr$Mask=="aMPFC"] = "Left"
+unique(data_Corr$Conditions)
+unique(data_Corr$Mask)
+WordPMES = data_Corr
 
 ########################### Demographics ##########################
 trackDat  = read.csv(paste(RD,"TrackTable.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
@@ -970,7 +994,111 @@ t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 
 
 
-########################### Word SRCD across Methods ##########################
+
+############################################################################## Perm Micro Event Separated Blocks----
+########################### Word PermMicroEvents Between Condition All Masks ##########################
+sDat = WordPMES
+unique(sDat$Conditions)
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat = sDat[sDat$Perm1 == sDat$Perm2,]
+head(sDat)
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere,PermCond),CorrVal = mean(CorrVal,na.rm = T)))
+head(sDat)
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+
+ggplot(sDat,aes(x=Hemisphere, y=CorrVal, fill = Conditions)) + 
+  geom_bar(stat="summary",fun="mean",position="dodge")+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
+  facet_grid(~Mask)+
+  theme_bw(base_family = "serif")+
+  theme(strip.text.x = element_text(size=16, face="bold"))+
+  theme(strip.text.y = element_text(size=16, face="bold"))+
+  labs(x="",y="Pearson's Correlation Coefficient", size=16)+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(legend.text = element_text(size = 16))+
+  theme(axis.title.y = element_text(size = 18))
+
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+
+ggplot(sDat,aes(x=Conditions, y=CorrVal, fill = Conditions)) + 
+  geom_bar(stat="summary",fun="mean",position="dodge")+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
+  facet_grid(~Mask)+
+  theme_bw(base_family = "serif")+
+  theme(strip.text.x = element_text(size=16, face="bold"))+
+  theme(strip.text.y = element_text(size=16, face="bold"))+
+  labs(x="",y="Pearson's Correlation Coefficient", size=16)+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(legend.text = element_text(size = 16))+
+  theme(axis.title.y = element_text(size = 18))
+
+
+#---------- HRF Effect
+sDat = WordPME
+unique(sDat$Conditions)
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,PermCond),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = sDat[sDat$Mask=="HPC",]
+
+ggplot(sDat,aes(x=PermCond, y=CorrVal, fill = Conditions)) + 
+  geom_bar(stat="summary",fun="mean",position="dodge")+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
+  facet_grid(~Mask)+
+  theme_bw(base_family = "serif")+
+  theme(strip.text.x = element_text(size=16, face="bold"))+
+  theme(strip.text.y = element_text(size=16, face="bold"))+
+  labs(x="",y="Pearson's Correlation Coefficient", size=16)+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(legend.text = element_text(size = 16))+
+  theme(axis.title.y = element_text(size = 18))
+
+
+
+########################### Word Compare PME and PMES ##########################
+sDat = WordPME
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat = sDat[sDat$Perm1 == sDat$Perm2,]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordPME = sDat
+datWordPME$Method = unique("Permuted Micro-Event")
+
+sDat = WordPMES
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat = sDat[sDat$Perm1 == sDat$Perm2,]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere,PermCond),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordPMES = sDat
+datWordPMES$Method = unique("Permuted Micro-Event Sep")
+
+sDat = rbind(datWordPME,datWordPMES)
+# sDat = sDat[sDat$Mask!="Auditory",]
+sDat$Method = factor(sDat$Method, levels = c("Permuted Micro-Event","Permuted Micro-Event Sep"))
+sDat$Conditions = factor(sDat$Conditions, levels = c("target_known", "known_unknown", "target_unknown"),
+                         labels = c("known_target", "known_unknown", "target_unknown"))
+
+
+ggplot(sDat,aes(x = Conditions , y = CorrVal, fill = Conditions)) +
+  geom_bar(stat="summary",fun="mean",position="dodge")+
+  # geom_jitter(position = position_jitterdodge(jitter.width = NULL,
+  #                                             jitter.height = 0,
+  #                                             dodge.width = .75),shape = 21,fill="grey",aes(colour = Conditions))+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
+  facet_grid(Method~Mask)+
+  theme_bw(base_family = "serif")+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(text = element_text(size=14))+
+  scale_fill_brewer(palette="Dark2")+
+  scale_color_brewer(palette="Dark2")
+
+########################### Word across Methods ##########################
 sDat = WordBB
 sDat = sDat[sDat$Conditions %in% c("target_known","target_unknown","known_unknown"),]
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
@@ -996,9 +1124,20 @@ sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "Corr
 datWordPME = sDat
 datWordPME$Method = unique("Permuted Micro-Event")
 
-sDat = rbind(datWordBB,datWordBE,datWordPME)
+sDat = WordPMES
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat = sDat[sDat$Perm1 == sDat$Perm2,]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere,PermCond),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordPMES = sDat
+datWordPMES$Method = unique("Permuted Micro-Event Sep")
+
+sDat = rbind(datWordBB,datWordBE,datWordPME,datWordPMES)
 # sDat = sDat[sDat$Mask!="Auditory",]
-sDat$Method = factor(sDat$Method, levels = c("Block-Based","Block-Event","Permuted Micro-Event"))
+sDat$Method = factor(sDat$Method, levels = c("Block-Based","Block-Event","Permuted Micro-Event","Permuted Micro-Event Sep"))
 sDat$Conditions = factor(sDat$Conditions, levels = c("target_known", "known_unknown", "target_unknown"),
                          labels = c("known_target", "known_unknown", "target_unknown"))
 
@@ -1015,6 +1154,7 @@ ggplot(sDat,aes(x = Conditions , y = CorrVal, fill = Conditions)) +
   theme(text = element_text(size=14))+
   scale_fill_brewer(palette="Dark2")+
   scale_color_brewer(palette="Dark2")
+
 graph2ppt(file=paste(WD,"Figure5.pptx",sep = ""),width = 12, height = 5.5)
 
 
@@ -1060,6 +1200,7 @@ cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method ==
 t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 ########################### Word LearnMEM Dissimialrities across Methods ##########################
 sDat = WordBB
+sDat$CorrVal = 1-sDat$CorrVal
 sDat = sDat[sDat$Conditions %in% c("target_known","target_unknown","known_unknown"),]
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
 sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
@@ -1067,6 +1208,7 @@ datWordBB = sDat
 datWordBB$Method = unique("Block-Based")
 
 sDat = WordBE
+sDat$CorrVal = 1-sDat$CorrVal
 sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
@@ -1075,6 +1217,7 @@ datWordBE = sDat
 datWordBE$Method = unique("Block-Event")
 
 sDat = WordPME
+sDat$CorrVal = 1-sDat$CorrVal
 sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
 sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
 sDat = sDat[sDat$Perm1 == sDat$Perm2,]
@@ -1084,13 +1227,25 @@ sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "Corr
 datWordPME = sDat
 datWordPME$Method = unique("Permuted Micro-Event")
 
-sDat = rbind(datWordBB,datWordBE,datWordPME)
+sDat = WordPMES
+sDat$CorrVal = 1-sDat$CorrVal
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat = sDat[sDat$Perm1 == sDat$Perm2,]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere,PermCond),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordPMES = sDat
+datWordPMES$Method = unique("Permuted Micro-Event Sep")
+
+sDat = rbind(datWordBB,datWordBE,datWordPME,datWordPMES)
 # sDat = sDat[sDat$Mask!="Auditory",]
-sDat$Method = factor(sDat$Method, levels = c("Block-Based","Block-Event","Permuted Micro-Event"))
+sDat$Method = factor(sDat$Method, levels = c("Block-Based","Block-Event","Permuted Micro-Event","Permuted Micro-Event Sep"))
 sDat$Conditions = factor(sDat$Conditions, levels = c("known_unknown", "target_known",  "target_unknown"),
                          labels = c("known_unknown", "known_target", "target_unknown"))
 
-sDat$CorrVal = 1-sDat$CorrVal
+
 
 
 ggplot(sDat,aes(x = Conditions , y = CorrVal, fill = Conditions)) +
@@ -1148,6 +1303,7 @@ t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known" & sDat$Method == Method
 cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method == Method
 t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
 ####################################### Correlations with Behavior Song Permutation -----------
 sDat = SongPME
 unique(sDat$Conditions)
