@@ -1471,7 +1471,7 @@ sDat = WordBB
 sDat = sDat[sDat$Conditions %in% c("target_known","target_unknown","known_unknown"),]
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
 sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
-# sDat$ZscoredValue = FisherZ(sDat$CorrVal)
+sDat$ZscoredValue = FisherZ(sDat$CorrVal)
 datWordBB = sDat
 datWordBB$Method = unique("BB")
 
@@ -1480,7 +1480,7 @@ sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unkn
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
 sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
-# sDat$ZscoredValue = FisherZ(sDat$CorrVal)
+sDat$ZscoredValue = FisherZ(sDat$CorrVal)
 datWordBE = sDat
 datWordBE$Method = unique("BE")
 
@@ -1491,7 +1491,7 @@ sDat = sDat[sDat$Perm1 == sDat$Perm2,]
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
 sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
-# sDat$ZscoredValue = FisherZ(sDat$CorrVal)
+sDat$ZscoredValue = FisherZ(sDat$CorrVal)
 datWordPME = sDat
 datWordPME$Method = unique("PME")
 
@@ -1503,7 +1503,7 @@ sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere,Per
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
 sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
-# sDat$ZscoredValue = FisherZ(sDat$CorrVal)
+sDat$ZscoredValue = FisherZ(sDat$CorrVal)
 datWordPMES = sDat
 datWordPMES$Method = unique("PMES")
 
@@ -1520,7 +1520,7 @@ sDat = WordBB
 sDat = sDat[sDat$Conditions %in% c("target_known","target_unknown","known_unknown"),]
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
 sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask","Hemisphere"), varName = "CorrVal", Criteria = 3)
-# sDat$ZscoredValue = FisherZ(sDat$CorrVal)
+sDat$ZscoredValue = FisherZ(sDat$CorrVal)
 datWordBB = sDat
 datWordBB$Method = unique("BB")
 
@@ -1528,7 +1528,7 @@ sDat = WordBE
 sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
 sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask","Hemisphere"), varName = "CorrVal", Criteria = 3)
-# sDat$ZscoredValue = FisherZ(sDat$CorrVal)
+sDat$ZscoredValue = FisherZ(sDat$CorrVal)
 datWordBE = sDat
 datWordBE$Method = unique("BE")
 
@@ -1538,7 +1538,7 @@ sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
 sDat = sDat[sDat$Perm1 == sDat$Perm2,]
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
 sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask","Hemisphere"), varName = "CorrVal", Criteria = 3)
-# sDat$ZscoredValue = FisherZ(sDat$CorrVal)
+sDat$ZscoredValue = FisherZ(sDat$CorrVal)
 datWordPME = sDat
 datWordPME$Method = unique("PME")
 
@@ -1549,7 +1549,7 @@ sDat = sDat[sDat$Perm1 == sDat$Perm2,]
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere,PermCond),CorrVal = mean(CorrVal,na.rm = T)))
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
 sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
-# sDat$ZscoredValue = FisherZ(sDat$CorrVal)
+sDat$ZscoredValue = FisherZ(sDat$CorrVal)
 datWordPMES = sDat
 datWordPMES$Method = unique("PMES")
 
