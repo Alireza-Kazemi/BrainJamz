@@ -1058,6 +1058,110 @@ t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known" & sDat$Method == Method
 cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method == Method
 t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+########################### Word LearnMEM  across Methods ##########################
+sDat = WordBB
+sDat = sDat[sDat$Conditions %in% c("target_known","target_unknown","known_unknown"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordBB = sDat
+datWordBB$Method = unique("Block-Based")
+
+sDat = WordBE
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordBE = sDat
+datWordBE$Method = unique("Block-Event")
+
+sDat = WordPME
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat = sDat[sDat$Perm1 == sDat$Perm2,]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordPME = sDat
+datWordPME$Method = unique("Permuted Micro-Event")
+
+sDat = rbind(datWordBB,datWordBE,datWordPME)
+# sDat = sDat[sDat$Mask!="Auditory",]
+sDat$Method = factor(sDat$Method, levels = c("Block-Based","Block-Event","Permuted Micro-Event"))
+sDat$Conditions = factor(sDat$Conditions, levels = c("target_known", "known_unknown", "target_unknown"),
+                         labels = c("known_target", "known_unknown", "target_unknown"))
+sDat = sDat[sDat$Mask=="HPC",]
+
+ggplot(sDat,aes(x = Conditions , y = CorrVal, fill = Conditions)) +
+  geom_bar(stat="summary",fun="mean",position="dodge")+
+  # geom_jitter(position = position_jitterdodge(jitter.width = NULL,
+  #                                             jitter.height = 0,
+  #                                             dodge.width = .75),shape = 21,fill="grey",aes(colour = Conditions))+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
+  facet_grid(Mask~Method)+
+  theme_bw(base_family = "serif")+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(text = element_text(size=14))+
+  scale_fill_brewer(palette="Dark2")+
+  scale_color_brewer(palette="Dark2")
+graph2ppt(file=paste(WD,"LearnMEM.pptx",sep = ""),width = 12, height = 5.5)
+
+
+sDat$ZscoredValue = FisherZ(sDat$CorrVal)
+Method = "Permuted Micro-Event"
+Mask = "HPC"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "known_target" & sDat$Method == Method
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown" & sDat$Method == Method
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method == Method
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown" & sDat$Method == Method
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "known_target" & sDat$Method == Method
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method == Method
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+
+Method = "Block-Based"
+Mask = "HPC"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "known_target" & sDat$Method == Method
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown" & sDat$Method == Method
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method == Method
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown" & sDat$Method == Method
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "known_target" & sDat$Method == Method
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method == Method
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+
+Mask = "aMTL"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known" & sDat$Method == Method
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown" & sDat$Method == Method
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method == Method
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown" & sDat$Method == Method
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known" & sDat$Method == Method
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method == Method
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+Mask = "Auditory"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known" & sDat$Method == Method
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown" & sDat$Method == Method
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method == Method
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown" & sDat$Method == Method
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known" & sDat$Method == Method
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method == Method
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 ########################### Word LearnMEM Dissimialrities across Methods ##########################
 sDat = WordBB
 sDat = sDat[sDat$Conditions %in% c("target_known","target_unknown","known_unknown"),]
