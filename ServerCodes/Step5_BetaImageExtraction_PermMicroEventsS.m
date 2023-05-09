@@ -56,23 +56,45 @@ for maskID = 1:length(MaskNames)
     mask{maskID} = spm_vol(readPath);
 end
 
-%% -------------------------->BlockBased Songs
-DesignName = 'BlockEvent';
+
+%% -------------------------->PermutedMicroEvent Songs
 SessName = 'Song';
+DesignName = 'PermMicroEventsS';
+eventTagName = '_PermS';
 includeSubj = Info.(['include',SessName]);
-ResultPath = [rootResultPath,Sep,DesignName,Sep,SessName];
 
-BetaImages_Extraction;
-clear betaImage
-disp('############################')
+DesingNameRoot = DesignName;
+for mEIdx = 1:5
+    mENameTag = [eventTagName,num2str(mEIdx)];
+    ResultPath = [rootResultPath,Sep,DesingNameRoot,Sep,SessName,mENameTag];
+    DesignName = [DesingNameRoot,mENameTag];
+    disp('################################################')
+    disp('################################################')
+    BetaImages_Extraction;
+    clear betaImage
+    disp('################################################')
+    disp('################################################')
+end
 
-%% -------------------------->BlockBased Word
-DesignName = 'BlockEvent';
+
+    
+%% -------------------------->PermutedMicroEvent Word
 SessName = 'Word';
+DesignName = 'PermMicroEventsS';
+eventTagName = '_PermS';
 includeSubj = Info.(['include',SessName]);
-ResultPath = [rootResultPath,Sep,DesignName,Sep,SessName];
 
-BetaImages_Extraction;
-clear betaImage
-disp('############################')
+
+DesingNameRoot = DesignName;
+for mEIdx = 1:5
+    mENameTag = [eventTagName,num2str(mEIdx)];
+    ResultPath = [rootResultPath,Sep,DesingNameRoot,Sep,SessName,mENameTag];
+    DesignName = [DesingNameRoot,mENameTag];
+    disp('################################################')
+    disp('################################################')
+    BetaImages_Extraction;
+    clear betaImage
+    disp('################################################')
+    disp('################################################')
+end
 
