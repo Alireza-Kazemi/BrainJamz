@@ -1144,9 +1144,9 @@ sDat$Conditions = factor(sDat$Conditions, levels = c("target_known", "known_unkn
 
 ggplot(sDat,aes(x = Conditions , y = CorrVal, fill = Conditions)) +
   geom_bar(stat="summary",fun="mean",position="dodge")+
-  # geom_jitter(position = position_jitterdodge(jitter.width = NULL,
-  #                                             jitter.height = 0,
-  #                                             dodge.width = .75),shape = 21,fill="grey",aes(colour = Conditions))+
+  geom_jitter(position = position_jitterdodge(jitter.width = NULL,
+                                              jitter.height = 0,
+                                              dodge.width = .75),shape = 21,fill="grey",aes(colour = Conditions))+
   stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
   facet_grid(Mask~Method)+
   theme_bw(base_family = "serif")+
@@ -1159,9 +1159,9 @@ graph2ppt(file=paste(WD,"Figure5.pptx",sep = ""),width = 12, height = 5.5)
 
 
 sDat$ZscoredValue = FisherZ(sDat$CorrVal)
-Method = "Permuted Micro-Event"
+Method = "Block-Based"
 Mask = "HPC"
-cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known" & sDat$Method == Method
+cond1 = sDat$Mask == Mask & sDat$Conditions == "known_target" & sDat$Method == Method
 cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown" & sDat$Method == Method
 t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 
@@ -1169,12 +1169,13 @@ cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method ==
 cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown" & sDat$Method == Method
 t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 
-cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known" & sDat$Method == Method
+cond1 = sDat$Mask == Mask & sDat$Conditions == "known_target" & sDat$Method == Method
 cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method == Method
 t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 
-Mask = "aMTL"
-cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known" & sDat$Method == Method
+Method = "Block-Event"
+Mask = "aMPFC" # "HPC" "aMTL" "Auditory" "aMPFC" 
+cond1 = sDat$Mask == Mask & sDat$Conditions == "known_target" & sDat$Method == Method
 cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown" & sDat$Method == Method
 t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 
@@ -1182,12 +1183,13 @@ cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method ==
 cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown" & sDat$Method == Method
 t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 
-cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known" & sDat$Method == Method
+cond1 = sDat$Mask == Mask & sDat$Conditions == "known_target" & sDat$Method == Method
 cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method == Method
 t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 
-Mask = "Auditory"
-cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known" & sDat$Method == Method
+Method = "Permuted Micro-Event"
+Mask = "aMPFC" # "HPC" "aMTL" "Auditory" "aMPFC" 
+cond1 = sDat$Mask == Mask & sDat$Conditions == "known_target" & sDat$Method == Method
 cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown" & sDat$Method == Method
 t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 
@@ -1195,9 +1197,149 @@ cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method ==
 cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown" & sDat$Method == Method
 t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
 
-cond1 = sDat$Mask == Mask & sDat$Conditions == "target_known" & sDat$Method == Method
+cond1 = sDat$Mask == Mask & sDat$Conditions == "known_target" & sDat$Method == Method
 cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method == Method
 t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+Method = "Permuted Micro-Event Sep"
+Mask = "aMPFC" # "HPC" "aMTL" "Auditory" "aMPFC" 
+cond1 = sDat$Mask == Mask & sDat$Conditions == "known_target" & sDat$Method == Method
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown" & sDat$Method == Method
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method == Method
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known_unknown" & sDat$Method == Method
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "known_target" & sDat$Method == Method
+cond2 = sDat$Mask == Mask & sDat$Conditions == "target_unknown" & sDat$Method == Method
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+########################### Word across Methods May 2023 ReScaled ##########################
+sDat = WordBB
+sDat = sDat[sDat$Conditions %in% c("target_known","target_unknown","known_unknown"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+# sDat$CorrVal = sDat$CorrVal/sd(sDat$CorrVal,na.rm=T)
+sDat$CorrVal = (sDat$CorrVal-min(sDat$CorrVal,na.rm=T))/(max(sDat$CorrVal,na.rm=T)-min(sDat$CorrVal,na.rm=T))
+datWordBB = sDat
+datWordBB$Method = unique("Block-Based")
+
+sDat = WordBE
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+# sDat$CorrVal = sDat$CorrVal/sd(sDat$CorrVal,na.rm=T)
+sDat$CorrVal = (sDat$CorrVal-min(sDat$CorrVal,na.rm=T))/(max(sDat$CorrVal,na.rm=T)-min(sDat$CorrVal,na.rm=T))
+datWordBE = sDat
+datWordBE$Method = unique("Block-Event")
+
+sDat = WordPME
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat = sDat[sDat$Perm1 == sDat$Perm2,]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+# sDat$CorrVal = sDat$CorrVal/sd(sDat$CorrVal,na.rm=T)
+sDat$CorrVal = (sDat$CorrVal-min(sDat$CorrVal,na.rm=T))/(max(sDat$CorrVal,na.rm=T)-min(sDat$CorrVal,na.rm=T))
+datWordPME = sDat
+datWordPME$Method = unique("Permuted Micro-Event")
+
+sDat = WordPMES
+sDat = sDat[sDat$Conditions %in% c("target_known", "target_unknown", "known_unknown"),]
+sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat = sDat[sDat$Perm1 == sDat$Perm2,]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere,PermCond),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+sDat$CorrVal = (sDat$CorrVal-min(sDat$CorrVal,na.rm=T))/(max(sDat$CorrVal,na.rm=T)-min(sDat$CorrVal,na.rm=T))
+datWordPMES = sDat
+datWordPMES$Method = unique("Permuted Micro-Event Sep")
+
+sDat = rbind(datWordBB,datWordBE,datWordPME,datWordPMES)
+# sDat = sDat[sDat$Mask!="Auditory",]
+sDat$Method = factor(sDat$Method, levels = c("Block-Based","Block-Event","Permuted Micro-Event","Permuted Micro-Event Sep"))
+sDat$Conditions = factor(sDat$Conditions, levels = c("target_known", "known_unknown", "target_unknown"),
+                         labels = c("known_target", "known_unknown", "target_unknown"))
+
+
+ggplot(sDat,aes(x = Conditions , y = CorrVal, fill = Conditions)) +
+  geom_bar(stat="summary",fun="mean",position="dodge")+
+  geom_jitter(position = position_jitterdodge(jitter.width = NULL,
+                                              jitter.height = 0,
+                                              dodge.width = .75),shape = 21,fill="grey",aes(colour = Conditions))+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
+  facet_grid(Mask~Method)+
+  theme_bw(base_family = "serif")+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(text = element_text(size=14))+
+  scale_fill_brewer(palette="Dark2")+
+  scale_color_brewer(palette="Dark2")
+########################### Song across Methods May 2023 ReScaled ##########################
+sDat = SongBB
+sDat = sDat[sDat$Conditions %in% c("target_reverse","target_novel","reverse_novel"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+# sDat$CorrVal = sDat$CorrVal/sd(sDat$CorrVal,na.rm=T)
+sDat$CorrVal = (sDat$CorrVal-min(sDat$CorrVal,na.rm=T))/(max(sDat$CorrVal,na.rm=T)-min(sDat$CorrVal,na.rm=T))
+datSongBB = sDat
+datSongBB$Method = unique("Block-Based")
+
+sDat = SongBE
+sDat = sDat[sDat$Conditions %in% c("target_reverse","target_novel","reverse_novel"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+# sDat$CorrVal = sDat$CorrVal/sd(sDat$CorrVal,na.rm=T)
+sDat$CorrVal = (sDat$CorrVal-min(sDat$CorrVal,na.rm=T))/(max(sDat$CorrVal,na.rm=T)-min(sDat$CorrVal,na.rm=T))
+datSongBE = sDat
+datSongBE$Method = unique("Block-Event")
+
+sDat = SongPME
+sDat = sDat[sDat$Conditions %in% c("target_reverse","target_novel","reverse_novel"),]
+sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat = sDat[sDat$Perm1 == sDat$Perm2,]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+# sDat$CorrVal = sDat$CorrVal/sd(sDat$CorrVal,na.rm=T)
+sDat$CorrVal = (sDat$CorrVal-min(sDat$CorrVal,na.rm=T))/(max(sDat$CorrVal,na.rm=T)-min(sDat$CorrVal,na.rm=T))
+datSongPME = sDat
+datSongPME$Method = unique("Permuted Micro-Event")
+
+sDat = SongPMES
+sDat = sDat[sDat$Conditions %in% c("target_reverse","target_novel","reverse_novel"),]
+sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat = sDat[sDat$Perm1 == sDat$Perm2,]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere,PermCond),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+sDat$CorrVal = (sDat$CorrVal-min(sDat$CorrVal,na.rm=T))/(max(sDat$CorrVal,na.rm=T)-min(sDat$CorrVal,na.rm=T))
+datSongPMES = sDat
+datSongPMES$Method = unique("Permuted Micro-Event Sep")
+
+sDat = rbind(datSongBB,datSongBE,datSongPME,datSongPMES)
+# sDat = sDat[sDat$Mask!="Auditory",]
+sDat$Method = factor(sDat$Method, levels = c("Block-Based","Block-Event","Permuted Micro-Event","Permuted Micro-Event Sep"))
+sDat$Conditions = factor(sDat$Conditions, levels = c("target_reverse","target_novel","reverse_novel"))
+
+
+ggplot(sDat,aes(x = Conditions , y = CorrVal, fill = Conditions)) +
+  geom_bar(stat="summary",fun="mean",position="dodge")+
+  # geom_jitter(position = position_jitterdodge(jitter.width = NULL,
+  #                                             jitter.height = 0,
+  #                                             dodge.width = .75),shape = 21,fill="grey",aes(colour = Conditions))+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
+  facet_grid(Mask~Method)+
+  theme_bw(base_family = "serif")+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(text = element_text(size=14))+
+  scale_fill_brewer(palette="Dark2")+
+  scale_color_brewer(palette="Dark2")
 ########################### Word LearnMEM Dissimialrities across Methods ##########################
 sDat = WordBB
 sDat$CorrVal = 1-sDat$CorrVal
