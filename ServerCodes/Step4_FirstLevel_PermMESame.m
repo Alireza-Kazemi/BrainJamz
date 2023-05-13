@@ -38,7 +38,7 @@ Mask = {'/home/kazemi/Documents/MATLAB/spm12/tpm/mask_ICV.nii,1'};
 % -------------------------------------> Words
 SessName = 'Word';
 SessFolderName = [SessName,'_raw'];
-for mEIdx = 2:5
+for mEIdx = 1:5
     mENameTag = [eventTagName,num2str(mEIdx)];
     includeSubj = Info.(['include',SessName]);
     designFileNameTag = ['_',SessName,mENameTag];

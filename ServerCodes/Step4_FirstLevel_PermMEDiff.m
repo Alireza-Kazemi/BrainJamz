@@ -27,7 +27,7 @@ load ParticipantsInfoJan23.mat
 %% First Level Analysis Permuted Micro Events
 FormatPrep = 'wra';% a for Slicetime, r for realignment, w for normalization, s for smoothing
 DesignName = 'PermMEDiff';
-eventTagName = '_PermS';
+eventTagName = '_PermMEDiff';
 DD = '/media/data/SIPAlireza/';
 DesignPath = uigetdir(DD,'Please choose the folder of Design .mat files');
 rootResultPath = uigetdir(DD,'Please choose a destination folder for results');
@@ -39,7 +39,7 @@ Mask = {'/home/kazemi/Documents/MATLAB/spm12/tpm/mask_ICV.nii,1'};
 % -------------------------------------> Words
 SessName = 'Word';
 SessFolderName = [SessName,'_raw'];
-for mEIdx = 2:5
+for mEIdx = 1:5
     mENameTag = [eventTagName,num2str(mEIdx)];
     includeSubj = Info.(['include',SessName]);
     designFileNameTag = ['_',SessName,mENameTag];
