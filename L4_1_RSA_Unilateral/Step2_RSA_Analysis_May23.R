@@ -1114,12 +1114,12 @@ sDat$PermCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
 head(sDat)
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,WordCond,Mask,Hemisphere,PermCond),N=n(),CorrVal = mean(CorrVal,na.rm = T)))
 head(sDat)
-sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,WordCond,Mask,Hemisphere),N=sum(N),CorrVal = mean(CorrVal,na.rm = T)))
 
-ggplot(sDat,aes(x=Hemisphere, y=CorrVal, fill = Conditions)) + 
+ggplot(sDat,aes(x=Conditions, y=CorrVal, fill =WordCond )) + 
   geom_bar(stat="summary",fun="mean",position="dodge")+
   stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
-  facet_grid(~Mask)+
+  facet_grid(Hemisphere~Mask)+
   theme_bw(base_family = "serif")+
   theme(strip.text.x = element_text(size=16, face="bold"))+
   theme(strip.text.y = element_text(size=16, face="bold"))+
