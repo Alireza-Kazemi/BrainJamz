@@ -62,7 +62,7 @@ end
 % -------------------------------------> Words
 SessName = 'Word';
 SessFolderName = [SessName,'_raw'];
-for mEIdx = 2:5
+for mEIdx = 1:5
     mENameTag = [eventTagName,num2str(mEIdx)];
     includeSubj = Info.(['include',SessName]);
     designFileNameTag = ['_',SessName,mENameTag];

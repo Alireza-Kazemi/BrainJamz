@@ -108,7 +108,7 @@ for Find=1:length(Files)
         onsets(emptyCondIdx) = [];
         durations(emptyCondIdx) = [];
         names(emptyCondIdx) = [];
-        save([Files{Find}(1:end-4),'_PermMEDiff',num2str(permIdx),'.mat'],'names','onsets','durations')
+        save([Files{Find}(1:end-4),'_Perm',num2str(permIdx),'.mat'],'names','onsets','durations')
     end
 end
 T = table(SID,permIndex,conditionName,sessionName,onsetTimes);

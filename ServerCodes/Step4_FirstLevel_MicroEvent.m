@@ -71,3 +71,39 @@ for mEIdx = 1:20
     RunFirstLevelBatch;
     cd(oldPWD)
 end
+
+%% First Level Analysis Permuted Micro Events
+FormatPrep = 'wra';% a for Slicetime, r for realignment, w for normalization, s for smoothing
+DesignName = 'PermMESame';
+eventTagName = '_PermMESame';
+DD = '/media/data/SIPAlireza/';
+DesignPath = uigetdir(DD,'Please choose the folder of Design .mat files');
+rootResultPath = uigetdir(DD,'Please choose a destination folder for results');
+IDs = Info.IDs;
+Dir = Info.Dir;
+
+Mask = {'/home/kazemi/Documents/MATLAB/spm12/tpm/mask_ICV.nii,1'};
+% -------------------------------------> Words
+SessName = 'Word';
+SessFolderName = [SessName,'_raw'];
+for mEIdx = 1:5
+    mENameTag = [eventTagName,num2str(mEIdx)];
+    includeSubj = Info.(['include',SessName]);
+    designFileNameTag = ['_',SessName,mENameTag];
+    ResultPath = [rootResultPath,Sep,DesignName,Sep,SessName,mENameTag];
+    mkdir(ResultPath)
+    
+    disp('################################################')
+    disp('################################################')
+    disp('################################################')
+    disp('################################################')
+    oldPWD = pwd;
+    RunFirstLevelBatch;
+    cd(oldPWD)
+
+    % Delete residual Files
+    copyfile('DeleteResiduals.sh',[ResultPath,Sep])
+    cd(ResultPath)
+    [status,cmdout]  = system('bash DeleteResiduals.sh');
+    cd(oldPWD)
+end

@@ -25,7 +25,7 @@ load ParticipantsInfoJan23.mat
 
 Mask = {'/home/kazemi/Documents/MATLAB/spm12/tpm/mask_ICV.nii,1'};
 
-%% First Level Analysis BlockBased
+%% First Level Analysis BlockEvent
 FormatPrep = 'wra';% a for Slicetime, r for realignment, w for normalization, s for smoothing
 DesignName = 'BlockEvent';
 DD = '/media/data/SIPAlireza/';

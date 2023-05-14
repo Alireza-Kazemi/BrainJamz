@@ -50,9 +50,10 @@ permIndex = [];
 conditionName = [];
 sessionName = [];
 onsetTimes = [];
+indexes = [];
 
 % Constant RNG seed to keep the track
-rng(20234);
+rng(20232);
 List = dir('*.mat');
 Files = {List.name};
 for Find=1:length(Files)
@@ -77,8 +78,10 @@ for Find=1:length(Files)
                 onsetN = onsetT(onsIdx):1:(onsetT(onsIdx)+durT(onsIdx)-1);
                 % Select random time points with minimum b seconds distance
                 rMEIdx = sort(randperm(n-(k-1)*(b-1),k))+(0:k-1)*(b-1);
-%                 disp(rMEIdx)
-                rMEIdx(rem(rMEIdx,2)==1) = rMEIdx(rem(rMEIdx,2)==1)+1;
+                if(rem(diff(rMEIdx),2)==0)
+                    rMEIdx(1) = rMEIdx(1)+1;
+                end
+                indexes = cat(1,indexes,rMEIdx);
 %                 disp(rMEIdx)
                 onsetN = onsetN(rMEIdx);
                 onsetERT = cat(2,onsetERT,onsetN);
@@ -108,3 +111,4 @@ for Find=1:length(Files)
     end
 end
 T = table(SID,permIndex,conditionName,sessionName,onsetTimes);
+
