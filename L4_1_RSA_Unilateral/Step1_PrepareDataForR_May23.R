@@ -283,3 +283,63 @@ data_Corr$Hemisphere = case_when(grepl("_L",data_Corr$Mask)~"Left",
 data_Corr$Mask = gsub("_L","",data_Corr$Mask)
 data_Corr$Mask = gsub("_R","",data_Corr$Mask)
 write.csv(data_Corr,"Word_PermMicroEventsS_ForR.csv", row.names = F)
+
+
+########################### Prepare Word PermMicroEventsS Separated Same/Diff Blocks Data and Save #################
+fileName = "RSA_PermMicroEventsS_Word.csv"
+data_Corr      = read.csv(paste(RD,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+A = as.data.frame(strsplit(unique(data_Corr$Conditions),"_"))
+A = transpose(A)
+names(A) = c("Cond1","Block1","Perm1","Cond2","Block2","Perm2")
+A$Conditions = paste(A$Cond1,A$Block1,A$Perm1,A$Cond2,A$Block2,A$Perm2,sep="_")
+data_Corr = merge(data_Corr, A, by = "Conditions", all.x = T)
+data_Corr = data_Corr[data_Corr$Perm1==data_Corr$Perm2,]
+data_Corr$WordCond = unique("RandomBoth")
+datBoth = data_Corr
+
+fileName = "RSA_PermMESame_Word.csv"
+data_Corr      = read.csv(paste(RD,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+A = as.data.frame(strsplit(unique(data_Corr$Conditions),"_"))
+A = transpose(A)
+names(A) = c("Cond1","Block1","Perm1","Cond2","Block2","Perm2")
+A$Conditions = paste(A$Cond1,A$Block1,A$Perm1,A$Cond2,A$Block2,A$Perm2,sep="_")
+data_Corr = merge(data_Corr, A, by = "Conditions", all.x = T)
+data_Corr = data_Corr[data_Corr$Perm1==data_Corr$Perm2,]
+data_Corr$WordCond = unique("Similar")
+datSame = data_Corr
+
+fileName = "RSA_PermMEDiff_Word.csv"
+data_Corr      = read.csv(paste(RD,fileName,sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+A = as.data.frame(strsplit(unique(data_Corr$Conditions),"_"))
+A = transpose(A)
+names(A) = c("Cond1","Block1","Perm1","Cond2","Block2","Perm2")
+A$Conditions = paste(A$Cond1,A$Block1,A$Perm1,A$Cond2,A$Block2,A$Perm2,sep="_")
+data_Corr = merge(data_Corr, A, by = "Conditions", all.x = T)
+data_Corr = data_Corr[data_Corr$Perm1==data_Corr$Perm2,]
+data_Corr$WordCond = unique("Different")
+datDiff = data_Corr
+
+data_Corr = rbind(datBoth,datSame,datDiff)
+
+data_Corr$SimilarityCond = ifelse(data_Corr$Cond1 == data_Corr$Cond2, "Within","Between")
+data_Corr$Conditions = case_when(data_Corr$SimilarityCond == "Within" ~ data_Corr$Cond1,
+                                 data_Corr$SimilarityCond == "Between"~ paste(data_Corr$Cond1,data_Corr$Cond2,sep = "_"))
+unique(data_Corr$Conditions)
+
+data_Corr$Conditions = factor(data_Corr$Conditions, 
+                              levels =  c("target", "known", "unknown", "baseline", 
+                                          "known_target", "unknown_target", "unknown_known",
+                                          "baseline_target", "baseline_known", "baseline_unknown",
+                                          "target_known", "target_unknown", "known_unknown",
+                                          "target_baseline", "known_baseline", "unknown_baseline"),
+                              labels = c("target", "known", "unknown", "baseline", 
+                                         "target_known", "target_unknown", "known_unknown",
+                                         "target_baseline", "known_baseline", "unknown_baseline",
+                                         "target_known", "target_unknown", "known_unknown",
+                                         "target_baseline", "known_baseline", "unknown_baseline"))
+
+data_Corr$Hemisphere = case_when(grepl("_L",data_Corr$Mask)~"Left",
+                                 grepl("_R",data_Corr$Mask)~"Right")
+data_Corr$Mask = gsub("_L","",data_Corr$Mask)
+data_Corr$Mask = gsub("_R","",data_Corr$Mask)
+write.csv(data_Corr,"Word_PermMESameDiff_ForR.csv", row.names = F)

@@ -242,3 +242,4 @@ data_Corr$Hemisphere = case_when(grepl("_L",data_Corr$Mask)~"Left",
 data_Corr$Mask = gsub("_L","",data_Corr$Mask)
 data_Corr$Mask = gsub("_R","",data_Corr$Mask)
 write.csv(data_Corr,"Word_PermMicroEvents_ForR.csv", row.names = F)
+
