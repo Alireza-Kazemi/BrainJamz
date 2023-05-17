@@ -115,7 +115,7 @@ for mEIdx = 1:20
 end
 
 
-%% First Level Analysis Permuted Micro Events
+%% First Level Analysis Permuted Micro Events Medly
 DesignNames = {'PermMicroEvents','PermMEBoth','PermMESame','PermMEDiff'};
 eventTagName = '_Perm';
 for DesignIdx = 1:4
