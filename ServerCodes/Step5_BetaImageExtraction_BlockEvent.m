@@ -56,7 +56,7 @@ for maskID = 1:length(MaskNames)
     mask{maskID} = spm_vol(readPath);
 end
 
-%% -------------------------->BlockBased Songs
+%% -------------------------->BlockEvent Songs
 DesignName = 'BlockEvent';
 SessName = 'Song';
 includeSubj = Info.(['include',SessName]);
@@ -66,7 +66,7 @@ BetaImages_Extraction;
 clear betaImage
 disp('############################')
 
-%% -------------------------->BlockBased Word
+%% -------------------------->BlockEvent Word
 DesignName = 'BlockEvent';
 SessName = 'Word';
 includeSubj = Info.(['include',SessName]);

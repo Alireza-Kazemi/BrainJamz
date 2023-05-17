@@ -57,7 +57,7 @@ for maskID = 1:length(MaskNames)
 end
 
 
-%% -------------------------->PermutedMicroEvent Songs
+%% -------------------------->PermutedMicroEventS Songs
 SessName = 'Song';
 DesignName = 'PermMicroEventsS';
 eventTagName = '_PermS';
@@ -78,7 +78,7 @@ end
 
 
     
-%% -------------------------->PermutedMicroEvent Word
+%% -------------------------->PermutedMicroEventS Word
 SessName = 'Word';
 DesignName = 'PermMicroEventsS';
 eventTagName = '_PermS';

@@ -22,6 +22,8 @@ SessionNum=1;
 
 %% Load Information data
 load ParticipantsInfoJan23.mat
+IDs = Info.IDs;
+Dir = Info.Dir;
 
 FormatPrep = 'wra';% a for Slicetime, r for realignment, w for normalization, s for smoothing
 
@@ -50,6 +52,11 @@ disp('################################################')
 oldPWD = pwd;
 RunFirstLevelBatch;
 cd(oldPWD)
+% Delete residual Files
+copyfile('DeleteResiduals.sh',[ResultPath,Sep])
+cd(ResultPath)
+[status,cmdout]  = system('bash DeleteResiduals.sh');
+cd(oldPWD)
 
 %% First Level Analysis BlockEvent
 DesignName = 'BlockEvent';
@@ -71,6 +78,11 @@ oldPWD = pwd;
 RunFirstLevelBatch;
 cd(oldPWD)
 
+% Delete residual Files
+copyfile('DeleteResiduals.sh',[ResultPath,Sep])
+cd(ResultPath)
+[status,cmdout]  = system('bash DeleteResiduals.sh');
+cd(oldPWD)
 
 %% First Level Analysis Micro Events Block Based
 DesignName = 'MicroEvent';
@@ -104,10 +116,11 @@ end
 
 
 %% First Level Analysis Permuted Micro Events
-DesignName = {'PermMicroEvents','PermMEBoth','PermMESame','PermMEDiff'};
+DesignNames = {'PermMicroEvents','PermMEBoth','PermMESame','PermMEDiff'};
 eventTagName = '_Perm';
 for DesignIdx = 1:4
-    DesignPath = [RootDesignPath,Sep,DesignName{DesignIdx}];
+    DesignName = DesignNames{DesignIdx};
+    DesignPath = [RootDesignPath,Sep,DesignName];
     
     % -------------------------------------> Words
     SessName = 'Word';
