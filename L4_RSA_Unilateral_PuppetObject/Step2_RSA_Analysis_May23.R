@@ -466,7 +466,73 @@ ggplot(sDat,aes(x=Hemisphere, y=CorrVal, fill = Conditions)) +
 
 
 
-########################### Word PermMeBSD Within Condition All Masks ##########################
+########################### Word PermMeBSD Within only Both words Condition All Masks ##########################
+sDat = WordPMEBSD
+unique(sDat$Conditions)
+sDat = sDat[sDat$Conditions %in% c("known", "puppet", "object", "novel"),]
+sDat$permCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat$blockCond = paste(sDat$Block1,sDat$Block2,sep = "_")
+unique(sDat$blockCond)
+sDat = sDat[sDat$WordCond=="Both",]
+# sDat = sDat[sDat$blockCond %in% c("1_2","2_3"),]
+head(sDat)
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,WordCond,Mask,Hemisphere,permCond),N=n(),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,WordCond,Mask,Hemisphere),N=n(),CorrVal = mean(CorrVal,na.rm = T)))
+head(sDat)
+
+ggplot(sDat,aes(x=Hemisphere, y=CorrVal, fill = Conditions)) + 
+  geom_bar(stat="summary",fun="mean",position="dodge")+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
+  facet_grid(~Mask)+
+  theme_bw(base_family = "serif")+
+  theme(strip.text.x = element_text(size=16, face="bold"))+
+  theme(strip.text.y = element_text(size=16, face="bold"))+
+  labs(x="",y="Pearson's Correlation Coefficient", size=16)+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(legend.text = element_text(size = 16))+
+  theme(axis.title.y = element_text(size = 18))
+
+sDat$ZscoredValue = FisherZ(sDat$CorrVal)
+Mask = "HPC"
+Hem = "Left"
+cond1 = sDat$Mask == Mask & sDat$Conditions == "target" & sDat$Hemisphere == Hem
+cond2 = sDat$Mask == Mask & sDat$Conditions == "known" & sDat$Hemisphere == Hem
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+cond1 = sDat$Mask == Mask & sDat$Conditions == "known" & sDat$Hemisphere == Hem
+cond2 = sDat$Mask == Mask & sDat$Conditions == "unknown" & sDat$Hemisphere == Hem
+t.test(sDat$ZscoredValue[cond1],sDat$ZscoredValue[cond2], paired = T)
+
+#-----------Collapse conditions
+sDat = WordPMEBSD
+unique(sDat$Conditions)
+sDat = sDat[sDat$Conditions %in% c("known", "puppet", "object", "novel"),]
+sDat$Conditions = factor(sDat$Conditions, levels=c("known", "puppet", "object", "novel"),
+                         labels = c("known","learned","learned","novel"))
+sDat$permCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat$blockCond = paste(sDat$Block1,sDat$Block2,sep = "_")
+head(sDat)
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,WordCond,Mask,Hemisphere,permCond,blockCond),N=n(),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,WordCond,Mask,Hemisphere,permCond),N=n(),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,WordCond,Mask,Hemisphere),N=n(),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),N=n(),CorrVal = mean(CorrVal,na.rm = T)))
+head(sDat)
+
+ggplot(sDat,aes(x=Hemisphere, y=CorrVal, fill = Conditions)) + 
+  geom_bar(stat="summary",fun="mean",position="dodge")+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
+  facet_grid(~Mask)+
+  theme_bw(base_family = "serif")+
+  theme(strip.text.x = element_text(size=16, face="bold"))+
+  theme(strip.text.y = element_text(size=16, face="bold"))+
+  labs(x="",y="Pearson's Correlation Coefficient", size=16)+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(legend.text = element_text(size = 16))+
+  theme(axis.title.y = element_text(size = 18))
+
+
+
+########################### Word PermMeBSD Between Condition All Masks ##########################
 sDat = WordPMEBSD
 unique(sDat$Conditions)
 sDat = sDat[sDat$Conditions %in% c("known_puppet", "known_object","puppet_object", 
@@ -637,6 +703,7 @@ datWordPME$Method = unique("PermME")
 sDat = WordPMEBSD
 sDat = sDat[sDat$Conditions %in% c("known_puppet", "known_object","puppet_object", 
                                    "known_novel", "puppet_novel", "object_novel"),]
+sDat = sDat[sDat$WordCond == "Both",]
 sDat$permCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
 sDat$blockCond = paste(sDat$Block1,sDat$Block2,sep = "_")
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere,permCond,blockCond),N=n(),CorrVal = mean(CorrVal,na.rm = T)))
@@ -648,7 +715,8 @@ sDat$CorrVal = (sDat$CorrVal-min(sDat$CorrVal,na.rm=T))/(max(sDat$CorrVal,na.rm=
 datWordPMEBSD = sDat
 datWordPMEBSD$Method = unique("PermMEBSD")
 
-sDat = rbind(datWordBB,datWordBE,datWordME,datWordPME,datWordPMEBSD)
+# sDat = rbind(datWordBB,datWordBE,datWordME,datWordPME,datWordPMEBSD)
+sDat = rbind(datWordBB,datWordBE,datWordPME,datWordPMEBSD)
 
 sDat$Method = factor(sDat$Method, levels = c("Block-Based","Block-Event","Micro-Event","PermME","PermMEBSD"))
 sDat$Conditions = factor(sDat$Conditions, levels = c("known_puppet", "known_object","puppet_object", 
