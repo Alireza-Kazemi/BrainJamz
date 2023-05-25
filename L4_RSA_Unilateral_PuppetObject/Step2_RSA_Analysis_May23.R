@@ -638,6 +638,7 @@ datWordPMEBSD$Method = unique("PermMEBSD")
 
 sDat = rbind(datWordBB,datWordBE,datWordME,datWordPME,datWordPMEBSD)
 
+
 sDat$Method = factor(sDat$Method, levels = c("Block-Based","Block-Event","Micro-Event","PermME","PermMEBSD"))
 sDat$Conditions = factor(sDat$Conditions, levels = c("known_puppet", "known_object","puppet_object", 
                                                      "known_novel", "puppet_novel", "object_novel"),
@@ -657,6 +658,91 @@ ggplot(sDat,aes(x = Conditions , y = CorrVal, fill = Conditions)) +
   theme(text = element_text(size=14))+
   scale_fill_brewer(palette="Dark2")+
   scale_color_brewer(palette="Dark2")
+
+
+
+
+########################### Word across Methods Only Left May 2023 ##########################
+hemisphereStr = "Left"
+
+sDat = WordBB
+sDat = sDat[sDat$Hemisphere==hemisphereStr,]
+sDat = sDat[sDat$Conditions %in% c("known_puppet", "known_object","puppet_object", 
+                                   "known_novel", "puppet_novel", "object_novel"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordBB = sDat
+datWordBB$Method = unique("Block-Based")
+
+sDat = WordBE
+sDat = sDat[sDat$Hemisphere==hemisphereStr,]
+sDat = sDat[sDat$Conditions %in% c("known_puppet", "known_object","puppet_object", 
+                                   "known_novel", "puppet_novel", "object_novel"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),N=n(),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordBE = sDat
+datWordBE$Method = unique("Block-Event")
+
+sDat = WordME
+sDat = sDat[sDat$Hemisphere==hemisphereStr,]
+sDat = sDat[sDat$Conditions %in% c("known_puppet", "known_object","puppet_object", 
+                                   "known_novel", "puppet_novel", "object_novel"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),N=n(),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordME = sDat
+datWordME$Method = unique("Micro-Event")
+
+sDat = WordPME
+sDat = sDat[sDat$Hemisphere==hemisphereStr,]
+sDat = sDat[sDat$Conditions %in% c("known_puppet", "known_object","puppet_object", 
+                                   "known_novel", "puppet_novel", "object_novel"),]
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),N=n(),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordPME = sDat
+datWordPME$Method = unique("PermME")
+
+sDat = WordPMEBSD
+sDat = sDat[sDat$Hemisphere==hemisphereStr,]
+sDat = sDat[sDat$WordCond == "Both",]
+sDat = sDat[sDat$Conditions %in% c("known_puppet", "known_object","puppet_object", 
+                                   "known_novel", "puppet_novel", "object_novel"),]
+sDat$permCond = paste(sDat$Perm1,sDat$Perm2,sep = "_")
+sDat$blockCond = paste(sDat$Block1,sDat$Block2,sep = "_")
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere,permCond,blockCond),N=n(),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere,permCond),N=n(),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask,Hemisphere),N=n(),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = as.data.frame(summarise(group_by(sDat,Subj,Conditions,Mask),CorrVal = mean(CorrVal,na.rm = T)))
+sDat = RemoveOutliers(sDat,factorNames = c("Conditions","Mask"), varName = "CorrVal", Criteria = 3)
+datWordPMEBSD = sDat
+datWordPMEBSD$Method = unique("PermMEBSD")
+
+# sDat = rbind(datWordBB,datWordBE,datWordME,datWordPME,datWordPMEBSD)
+sDat = rbind(datWordBB,datWordBE,datWordPME,datWordPMEBSD)
+
+
+sDat$Method = factor(sDat$Method, levels = c("Block-Based","Block-Event","Micro-Event","PermME","PermMEBSD"))
+sDat$Conditions = factor(sDat$Conditions, levels = c("known_puppet", "known_object","puppet_object", 
+                                                     "known_novel", "puppet_novel", "object_novel"),
+                         labels = c("known_puppet", "known_object","puppet_object",
+                                    "known_novel", "puppet_novel", "object_novel"))
+
+
+ggplot(sDat,aes(x = Conditions , y = CorrVal, fill = Conditions)) +
+  geom_bar(stat="summary",fun="mean",position="dodge")+
+  # geom_jitter(position = position_jitterdodge(jitter.width = NULL,
+  #                                             jitter.height = 0,
+  #                                             dodge.width = .75),shape = 21,fill="grey",aes(colour = Conditions))+
+  stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
+  facet_grid(Mask~Method)+
+  theme_bw(base_family = "serif")+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  theme(text = element_text(size=14))+
+  scale_fill_brewer(palette="Dark2")+
+  scale_color_brewer(palette="Dark2")+
+  labs(y = "Similarity Score")
 
 
 
