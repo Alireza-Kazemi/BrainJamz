@@ -1,13 +1,12 @@
-% Main Run
+% Step5 Beta Image Extraction
 % FileLocations
 %
-% This function returns the location of images
+% This function returns the estimated beta images computed in the first
+% level analysis
 % 
-% Developed by Alireza Kazemi 2019
+% Developed by Alireza Kazemi 2023
 % kazemi@ucdavis.edu 
 %
-% For Future the PAth of the SPM should be determined automatically in the 
-% preprocessing step.
 %
 clear;
 clc;

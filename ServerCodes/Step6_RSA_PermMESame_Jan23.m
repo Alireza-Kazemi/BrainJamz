@@ -34,7 +34,7 @@ rootResultPath = uigetdir(DD,'Please choose a destination folder for results');
 
 
 
-%% RSA for Word EventRelated within Subj between Conditions
+%% RSA for Word PermMESame within Subj between Conditions
 SessName = 'Word';
 DesignName = 'PermMESame';
 includeSubj = Info.(['include',SessName]);

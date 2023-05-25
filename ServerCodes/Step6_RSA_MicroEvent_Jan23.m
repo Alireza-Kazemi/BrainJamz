@@ -20,7 +20,7 @@ rootResultPath = uigetdir(DD,'Please choose a destination folder for results');
 
 
 
-%% RSA for Song EventRelated within Subj between Conditions
+%% RSA for Song MicroEvent within Subj between Conditions
 SessName = 'Song';
 DesignName = 'MicroEvent';
 includeSubj = Info.(['include',SessName]);
@@ -39,7 +39,7 @@ disp('############################')
 disp('############################')
 
 
-%% RSA for Word EventRelated within Subj between Conditions
+%% RSA for Word MicroEvent within Subj between Conditions
 SessName = 'Word';
 DesignName = 'MicroEvent';
 includeSubj = Info.(['include',SessName]);
