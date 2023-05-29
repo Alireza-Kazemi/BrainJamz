@@ -2,7 +2,7 @@
 rm(list=ls(all=TRUE))
 
 x = readline()
-D:\Projects\BrainJamz\DataFiles\L4_1_RSA_Unilateral
+D:\Projects\BrainJamz\DataFiles\L4_RSA_Unilateral
 setwd(x)
 getwd()
 
@@ -36,8 +36,8 @@ p_load(reshape2,
        data.table)
 # p_load(psych,plyr,psych,MCMCpack)
 
-RD = "D:\\Projects\\BrainJamz\\DataFiles\\L4_1_RSA_Unilateral\\"
-WD = "D:\\Projects\\BrainJamz\\DataFiles\\L4_1_RSA_Unilateral\\"
+RD = "D:\\Projects\\BrainJamz\\DataFiles\\L4_RSA_Unilateral\\"
+WD = "D:\\Projects\\BrainJamz\\DataFiles\\L4_RSA_Unilateral\\"
 
 ########################### Functions -----
 RemoveOutliers <- function(dataFrame,factorNames,varName,Criteria=3){
