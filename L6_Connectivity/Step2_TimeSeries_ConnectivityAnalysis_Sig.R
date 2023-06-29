@@ -57,7 +57,7 @@ RemoveOutliers <- function(dataFrame,factorNames,varName,Criteria=3){
   return(dataFrame)
 }
 ########################### LoadData #################
-dat      = read.csv(paste(RD,"Word_Connectivity_ForR.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+dat      = read.csv(paste(RD,"Word_Connectivity_Sig_ForR.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
 dat$Condition = factor(dat$Condition, 
                               levels = c("known", "puppet","object", "novel","baseline"))
 head(dat)
@@ -86,15 +86,14 @@ sDat = sDat[sDat$Seed != sDat$Target,]
 sDat = as.data.frame(summarise(group_by(sDat,Subj,Condition,Regions,Hemisphere),
                                N=n(),
                                CorrAllS = mean(CorrAllS,na.rm=T),
-                               CorrRmF2S = mean(CorrRmF2S,na.rm=T),
-                               CorrSeeds = mean(CorrSeeds,na.rm=T)))
+                               CorrAllS_Sig = mean(CorrAllS_Sig,na.rm=T)))
 
 sDat = sDat[sDat$Hemisphere == "Left",]
 
 unique(sDat$Regions)
 head(sDat)
 
-ggplot(sDat,aes(x=Hemisphere, y=CorrAllS, fill = Regions)) + 
+ggplot(sDat,aes(x=Hemisphere, y = CorrAllS_Sig, fill = Regions)) + 
   geom_bar(stat="summary",fun="mean",position="dodge")+
   stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
   facet_wrap(~Condition)+
@@ -105,7 +104,7 @@ ggplot(sDat,aes(x=Hemisphere, y=CorrAllS, fill = Regions)) +
   theme(axis.text.x = element_text(size = 16))+
   theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())
 
-ggplot(sDat,aes(x=Regions, y=CorrAllS, fill =Condition )) + 
+ggplot(sDat,aes(x=Regions, y = CorrAllS_Sig, fill =Condition )) + 
   geom_bar(stat="summary",fun="mean",position="dodge")+
   stat_summary(fun.data = "mean_se", geom="errorbar",position="dodge")+
   theme_bw(base_family = "serif")+
@@ -114,6 +113,9 @@ ggplot(sDat,aes(x=Regions, y=CorrAllS, fill =Condition )) +
   theme(axis.title.y = element_text(size = 18))+
   theme(axis.text.x = element_text(size = 16))+
   theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())
+
+SaveDat = reshape2::dcast(sDat,Subj~Condition+Regions+Hemisphere,value.var = "CorrAllS_Sig")
+write.csv(SaveDat,"ConnectivityScores")
 
 ggplot(sDat,aes(x=Regions, y=CorrSeeds, fill =Condition )) + 
   geom_bar(stat="summary",fun="mean",position="dodge")+
