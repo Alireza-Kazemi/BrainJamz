@@ -59,5 +59,10 @@ data_Corr$ID = as.numeric(gsub("S","",data_Corr$Subj))
 data_Corr = data_Corr[,!names(data_Corr)=="Subj"]
 dat = merge(dat,data_Corr, by = "ID", all.x = T)
 
+data_Corr      = read.csv(paste(RD,"ConnectivityScores.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+data_Corr$ID = as.numeric(gsub("S","",data_Corr$Subj))
+data_Corr = data_Corr[,!names(data_Corr)=="Subj"]
+dat = merge(dat,data_Corr, by = "ID", all.x = T)
 
-write.csv(dat, paste(WD,"Word_task_september22_wRSA.csv",sep="") , row.names = F , na = "")
+
+write.csv(dat, paste(WD,"Word_task_september22_wRSAandConnectivity.csv",sep="") , row.names = F , na = "")

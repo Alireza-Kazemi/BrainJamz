@@ -76,3 +76,23 @@ dat$Target = factor(dat$Target, levels = c("HPC_L", "HPC_R", "aMTL_L", "aMTL_R",
 
 unique(dat$Condition)
 write.csv(dat,paste(RD,"Word_Connectivity_Sig_ForR.csv",sep=""), row.names = F)
+
+########################### Prepare Word Seed Based Connectivity Data and Save #################
+dat      = read.csv(paste(RD,"TimeSeries_SeedbasedConn_Word_Collapsed.csv",sep=""),sep = ",",header=TRUE,strip.white=TRUE)
+unique(dat$Condition)
+dat$Condition = factor(dat$Condition, 
+                       levels = c("target" , "Known", "Unknown", "baseline"),
+                       labels = c("target" , "known", "unknown", "baseline"))
+
+unique(dat$Seed)
+dat$Seed = factor(dat$Seed, levels = c("HPC_L", "HPC_R", "aMTL_L", "aMTL_R", 
+                                       "PAuditory_L", "PAuditory_R", "aMPFCSphere"), 
+                  labels = c("HPC_L", "HPC_R", "aMTL_L", "aMTL_R", 
+                             "Auditory_L", "Auditory_R", "aMPFC_L"))
+dat$Target = factor(dat$Target, levels = c("HPC_L", "HPC_R", "aMTL_L", "aMTL_R", 
+                                           "PAuditory_L", "PAuditory_R", "aMPFCSphere"), 
+                    labels = c("HPC_L", "HPC_R", "aMTL_L", "aMTL_R", 
+                               "Auditory_L", "Auditory_R", "aMPFC_L"))
+
+unique(dat$Condition)
+write.csv(dat,paste(RD,"WordCollapsed_Connectivity_Sig_ForR.csv",sep=""), row.names = F)
